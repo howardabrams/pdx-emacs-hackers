@@ -1,0 +1,21 @@
+#+TITLE:  Portland Emacs Hackers Meetup
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Sep 10
+#+TAGS:   emacs community
+
+Welcome to the repository of the Portland, Oregon based Meetup
+associated with Emacs.
+
+   We get together to share our exciting new discoveries about Emacs and
+   its multitudinous ecosystem. We also offer assistance to those who
+   have brought Emacs questions along.
+
+   Both Emacs wizards and Emacs novices are welcome. Even Vim users are
+   welcome, but we cannot guarantee they will want to remain Vim users at
+   the end of the session.
+
+This repository contains documents, notes, and a small collection of
+magical incantations related to our organization.
+
+More to come ... Happy Hacking.
