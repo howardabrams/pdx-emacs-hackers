@@ -30,11 +30,11 @@ Hacker Howard
 
   - Howard Abrams, who was hoping to get a group buy on Emacs stickers for his laptop.
   - Chris Freeman, who was looking for tips and tricks to using Emacs.
-  - Will would like to help new people get started and discuss
+  - Will Clifford, who would like to help new people get started and discuss
     various workflows surrounding Emacs.
   - Micah Cowan, who is an old vi user wanting to switch, but make the
     startup time to Emacs quicker... or at least, better integration with tmux.
-  - William Clifford who is a seasoned hacker, but new to Emacs.
+  - William (the other Will) is a seasoned hacker, but new to Emacs.
 
 * Business
 
