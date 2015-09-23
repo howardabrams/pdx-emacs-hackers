@@ -1,0 +1,119 @@
+#+TITLE:  Notes from the Kickoff
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Sep 22
+#+TAGS:   emacs community
+
+I emailed the following message to the entire group yesterday:
+
+#+BEGIN_QUOTE
+Hey there, Hackers!
+
+Thanks so much for joining the group. I love that we have so much
+local interest. I realize that our kickoff/brainstorming session is
+starting a bit too quickly for most people, so if you can't meet
+tomorrow, but have some ideas/suggestions to pitch, perhaps use
+this Discussion page to post them?
+
+See many of you tomorrow, and the rest of you next month!
+Hacker Howard
+#+END_QUOTE
+
+  And for those Hackers that came out this evening, /Thanks for
+  coming!/ I appreciate the feedback and suggestions. Feel free to
+  submit pull requests to this repository to help correct the
+  following notes.
+
+* Introductions
+
+  Attendees for tonight's kickoff included:
+
+  - Howard Abrams, who was hoping to get a group buy on Emacs stickers for his laptop.
+  - Chris Freeman, who was looking for tips and tricks to using Emacs.
+  - Will would like to help new people get started and discuss
+    various workflows surrounding Emacs.
+  - Micah Cowan, who is an old vi user wanting to switch, but make the
+    startup time to Emacs quicker... or at least, better integration with tmux.
+  - William Clifford who is a seasoned hacker, but new to Emacs.
+
+* Business
+
+  Monthly, predictable meetings are the best... but when?  Chris
+  Freeman came up a [[http://chrisfreeman.github.io/calagator_2015.html][first pass at a Calagator analysis]].  Meetings are
+  sorted into reoccurring categories by day of the week and week of
+  the month.
+
+  We decided that the *Third Wednesday* of each month is the best.
+  This means that Oct 21st at 6:30pm will be our next meeting.
+
+* Normal Structure and Agenda
+
+  At EmacsConf 2015, Harry Schwartz mentioned how important it was to
+  establish a regular /structure/ to each meeting, but what should be
+  that entail? We discussed quite a few options, including:
+
+  - Larger presentations or tutorials?
+    - Pro: Very useful and often worthy of recording and transmitting
+    - Con: Time consuming for the presenter, so hard to get monthly speakers
+  - Short segments around 15 minutes?
+    - Pro: Useful, but easier to produce
+    - Con: Compelling enough to bring people out?
+  - Lightning talks
+    - Pro: Very easy to produce
+    - Con: Can be disjointed, but can we get enough people each month?
+  - Quick tips and tricks?
+    - See lightning talks
+  - Should we do a /Round Table/ that includes “what I’ve learned”
+    this month?
+  - Office hours
+    - Pro: Works well in a bar and can be very focused
+    - Con: Seems like we aren't trying. ;-)
+  - New Person's Night
+    - Similar to Office Hours where people post questions what they
+      need and others are around to answer.
+
+  We decided to do everything, so next month's agenda will be:
+
+  - 15 minute presentation (we'll start with an Introduction to Magit)
+    - How to get started.
+    - The /Why/ one would want to play with the technology.
+    - How to keep going, including learning resources.
+  - Lightning talks.
+    - What did you learn this month? Care to show it off?
+    - We'll have a before-meeting signup
+  - Office Hours
+    - Will, if we can use his office space, will supply a whiteboard
+    - One side will be problems or other issues one wants to fix
+    - The other will be other topics or projects that people are
+      working on.
+
+* Technical Aspects
+
+  - Find a space with a projector and seating.
+    - Will going to check with CrowdCompass for space
+  - Remote viewing?
+    - Google hangout or other group chat
+    - Video cameras?
+    - Decided that we may not have enough attendees to justify this
+      effort at this time, but that may change.
+  - Worth summarizing how to get started with Emacs
+    - Chris Freeman may work on an initial pass at reference links.
+  - Other more-regular communication?
+    - IRC channel? #pdx-emacs
+    - Twitter hashtag? #pdx-emacs
+
+* Possible Topics
+
+  - Language-specific Tutorials, e.g. Python, Ruby, Clojure
+    - Invite members of other user groups
+  - Magit
+    - Basic tutorial
+    - New v2.0 features
+  - org-mode
+    - Literate programming
+    - Organizing tasks and agendas
+  - micro-optimizations
+  - Beginning tutorials or introductions?
+
+  We decided that Magit would be a great first presentation and Howard
+  and Will will tag team this one.
