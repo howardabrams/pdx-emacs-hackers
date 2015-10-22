@@ -1,0 +1,84 @@
+#+TITLE:  Notes from First Meeting
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Oct 21
+#+TAGS:   Emacs community
+
+* Agenda
+
+  - Introductions
+  - Magit Presentation by Howard Abrams
+  - Lightning Talks
+  - Office Hours
+  - 8pm Transfer to Local Pub
+
+Thanks to /CrowdCompass/ for Hosting Us!
+
+* Presentation
+
+  Tonight's presentation was a demonstration on [[https://github.com/magit/magit][Magit]], a Git Porcelain
+  for Emacs by Howard Abrams.
+
+  Code and presentation is available on Github:
+      [[http://github.com/howardabrams/magit-demo][www.github.com/howardabrams/magit-demo]]
+
+  Due to technical AV difficulties, we weren't able to record the
+  presentation, but Howard will record it later, and post to the
+  Meetup channel with a link.
+
+** How to Learn?
+
+   Just jump in!  =M-x package-install magit=
+
+   #+begin_src emacs-lisp
+    (require 'magit)
+    (global-set-key (kbd "C-x g") 'magit-status)
+   #+end_src
+
+   Clone the demo repo: [[http://github.com/howardabrams/magit-demo][github.com/howardabrams/magit-demo]]
+   Then run the following commands to create two repositories that
+   have upstream conflicts. This allows someone to practice the
+   git workflow (and can be used outside of Magit).
+
+   - =gitrepo-history-conflict.sh=
+   - =gitrepo-history-nice.sh=
+
+** Summary Links
+
+  - Home Page: [[https://github.com/magit/magit][github.com/magit/magit]]
+
+  - Online Tutorials and Books:
+    - [[http://magit.vc/manual/magit.html#Top][Magit Documentation]] and *Info Mode*
+    - [[https://www.masteringemacs.org/article/introduction-magit-emacs-mode-git][Mastering Emacs]], by Mickey Peterson
+    - [[http://daemianmack.com/magit-cheatsheet.html][Magit Cheatsheet]], by Daemian Mack
+
+  - Other Package Integrations:
+    - *Gerrit*: [[https://github.com/terranpro/magit-gerrit][github.com/terranpro/magit-gerrit]]
+    - *Github*: [[https://github.com/sigma/magit-gh-pulls][github.com/sigma/magit-gh-pulls]]
+
+* Lightning Talks
+
+** Will discussed Exercism
+
+   The [[http://exercism.io/][exercism.io]] project allows programmers to learn a new language
+   by solving problems in various languages and submitting them for
+   review and feedback from peers who have already solved the same problem.
+
+   - Get started by installing the desktop clients (written in Go)
+   - Use the Emacs plugin that interfaces to the Go client
+   - Pass the tests by writing the code (Test Driven Development)
+     - The Emacs Lisp uses the [[http://www.gnu.org/software/emacs/manual/html_mono/ert.html][ert]]
+   - Once complete, submit, and others can comment on the web site
+   - Emacs Lisp is one of a learning languages
+   - Also look at [[https://projecteuler.net/][Project Euler]] and [[https://www.codeeval.com/][CodeEval]]
+
+** Other Notes
+
+   - Had a short discussion about the merits of Eshell.
+     Check out [[http://www.howardism.org/Technical/Emacs/eshell-fun.html][this article]] on it.
+
+* Office Hours
+
+  Retired to Kell's for beers and to start our Office Hours. Lots of
+  opinions on org-mode, and we decided that next month, Chris Freeman
+  will show the best way to get started programming in Python with Emacs.
