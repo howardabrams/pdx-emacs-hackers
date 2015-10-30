@@ -23,8 +23,8 @@ Thanks to /CrowdCompass/ for Hosting Us!
       [[http://github.com/howardabrams/magit-demo][www.github.com/howardabrams/magit-demo]]
 
   Due to technical AV difficulties, we weren't able to record the
-  presentation, but Howard will record it later, and post to the
-  Meetup channel with a link.
+  presentation, but Howard recorded it at home and uploaded it to
+  Youtube: https://www.youtube.com/watch?v=vQO7F2Q9DwA
 
 ** How to Learn?
 
