@@ -1,0 +1,70 @@
+#+TITLE:  Notes from Second Meeting
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Nov 18
+#+TAGS:   emacs community
+
+* Agenda
+
+  - Introductions
+  - Pythonic Interactions with Chris Freeman
+  - Lightning Talks
+  - Office Hours
+  - 8pm Transfer to Local Pub
+
+  Thanks again to /CrowdCompass/ for Hosting Us!
+
+* Lightning Talks
+
+** Editing Macros
+
+   Chris demonstrated visually editing a macro. Really quite
+   impressive, and would love to see if we can't get him to record the
+   details.
+
+** Quick Text Replacement
+
+   Howard talked about three ways of quickly editing text:
+
+ * *Language-specific Refactorings:*
+
+   Some language modes have nice features for changing code. Started
+   with demonstrating Magnar Sveen's [[https://github.com/clojure-emacs/clj-refactor.el][Clojure Refactoring]] project for
+   Cider.
+
+ * *Visual Regular Expressions:*
+
+   Since regular expressions can be tricky to get right the first time
+   (and Emacs' regular expressions are a bit different than other
+   interpretations of that spec), Howard uses this project that
+   highlights what matches and how it will be replaced:
+
+   - Install: =visual-regexp=
+   - https://github.com/benma/visual-regexp.el/
+   - Bind: =C-c r=
+
+ * *Multiple Cursors:*
+
+   Sometimes, the regular expression is going to be too tricky, and
+   instead of using the macro feature, Magnar Sveen implemented the
+   ability to have multiple cursors in your document. This becomes
+   nifty when you want to copy the next two words for each cursor, and
+   append them to the end each line, but in uppercase... for instance.
+
+   - Install: =multiple-cursors=
+   - https://github.com/magnars/multiple-cursors.el
+
+** Other Notes
+
+   Sacha Chua added our meetup to http://www.emacswiki.org/emacs/Usergroups
+
+* Office Hours
+
+  Retired to Kell's for drinks and to start our Office Hours.
+
+  Howard demonstrated [[http://geeklet.org/flora/][a side project]] of his for teaching students
+  about Turing Machines, and Will gave him a couple of links to other
+  interesting projects:
+
+  - [[http://www.muppetlabs.com/~breadbox/bf/][Brainfuck]] ... a simple Turing language
+  - [[http://www.nand2tetris.org/][From Nand to Tetris]] ... a course on teaching the basics of computers
