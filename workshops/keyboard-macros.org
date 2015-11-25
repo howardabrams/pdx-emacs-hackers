@@ -1,0 +1,223 @@
+#+TITLE:  Workshop for Emacs Macros
+#+AUTHOR: Howard Abrams
+#+DATE:   2015 Nov 24
+#+TAGS:   emacs workshop
+
+Basic idea of this file is to be both a *guide* and a *practice pad*
+for leveling up on Emacs’ keyboard macro system.
+
+To use, just download this file to your system, and edit it in Emacs.
+Then just follow along... If you are not familiar with org-mode files,
+here are the basics for this workshop:
+
+  - Hit a tab on the header expands or collapses it
+  - Narrow to show just one section with: C-x n s
+  - Return by widening normally with: C-x n w
+  - Hyperlinks can be clicked on to view the Emacs Manual
+
+Pretty much treat the rest of this document as a text file.
+
+* Basic Usage
+
+  Let’s begin with something simple to try out this project.
+  In the /block area/ below, hit: C-c ' (yes, the apostrophe).
+
+  #+BEGIN_SRC org
+    - this should be interesting
+    - nulla posuere
+    - nullam tempus
+    - etiam laoreet quam sed arcu
+    - donec hendrerit tempor tellus
+    - mauris mollis tincidunt felis
+    - etiam laoreet quam sed arcu
+    - nullam rutrum
+    - sed diam
+    - lorem ipsum dolor sit amet, consectetuer adipiscing elit
+    - mauris ac felis vel velit tristique imperdiet
+    - fusce suscipit, wisi nec facilisis facilisis, est dui fermentum leo, quis tempor ligula erat quis odio
+    - donec hendrerit tempor tellus
+  #+END_SRC
+
+  Notice that the frame is split with this document still visible?
+
+  Good, let’s play around. Let’s capitalize the first letter of each line.
+  Position point at the beginning of the first line, and then:
+
+  - F3
+  - M-c
+  - C-n
+  - C-a
+  - F4
+
+  Press F4 repeatedly to capitalize the first word on each line.
+  Don’t capitalize /every/ line... leave a few alone for a moment.
+  Now you have the basics.
+
+  Let’s make a new macro to capitalize the /last/ word on each line.
+  Pop back up to the top of the list, and:
+
+  - F3
+  - C-e
+  - M-b
+  - M-c
+  - C-n
+  - F4
+
+  Once again, leave a few lines alone.
+  Just one more macro, as I want to show you something interesting.
+  Jump back to the beginning, and:
+
+  - F3
+  - C-a
+  - M-f
+  - Space
+  - foobar (or type any single word you find amusing)
+  - C-n
+  - F4
+
+  Type: C-x C-k C-k
+
+  Notice it behaves the same as F4, but you can keep typing C-k to
+  execute your macro.
+
+  Start typing C-n and/or C-p and notice the minibuffer. It alternates
+  between the following:
+
+  - M-c C-n C-a
+  - C-e M-b M-c C-n
+  - C-a M-f SPC f 2*o b a r C-n
+
+  Typing C-k at any point will execute that macro. You’ve now see the
+  Emacs Macro Ring, and can manipulate it. You are now at Level 2.
+
+  Type C-c ' (apostrophe) to close that side window.
+
+* Naming Macros
+
+  While that =foobar= macro may be quite handy, looping around the
+  keyboard macro ring to select it may be inefficient. Name it!
+
+     C-x C-k n
+
+  Give it a name of foobar, and now, you can: M-x foobar
+  to have the macro run.
+
+  Perhaps it may be more useful to bind that macro to some un-used
+  key, like C-c k or F2 ... type:
+
+     C-x C-k b
+
+  And then type your binding, e.g. C-c k
+
+  You know that C-c followed by a single letter is supposed to be free
+  of usage and available for your nefarious reasons, right?
+
+  Read the [[info:emacs#Save%20Keyboard%20Macro][the Emacs Manual]] for details. If you actually tried this
+  example, then you have earned enough experience points to be level 3.
+
+* What do you mean On Every Line?
+
+  Keyboard macros are slick, and while we /could/ prefix the F4 with
+  the numbering prefix to run it multiple times at once, e.g. C-9 F4,
+  a typical use case is to run it on every line in a region.
+
+  Position the cursor in the block, and type: C-c ‘
+
+  #+BEGIN_SRC org
+    I will take out the trash
+    I should stop swearing
+    I may stop to smell the roses
+    I do want to go shopping
+    I could care less
+  #+END_SRC
+
+  With the point on the first line, type:
+
+  - F3
+  - C-a
+  - M-f
+  - M-f
+  - Space
+  - not (type the word, =not=)
+  - F4
+
+  Now select the remaining 4 lines any way you like, and type:
+
+  - C-x C-k r
+
+  Read [[info:emacs#Basic%20Keyboard%20Macro][the Emacs Manual]] for complete details, and welcome to level 4.
+
+* Numbering
+
+  Numbering things seems to be important to people. Let’s see if we
+  can easily number the worst song ever inflicted on humanity.
+
+  Once again, position the point inside the block, and type: C-c '
+
+  #+BEGIN_SRC org
+    Drummers Drumming
+    Pipers Piping
+    Lords a Leaping
+    Ladies Dancing
+    Maids a Milking
+    Swans a Swimming
+    Geese a Laying
+    Golden Rings
+    Calling Birds
+    French Hens
+    Turtle Doves
+    Partridge in a Pear Tree
+  #+END_SRC
+
+  Follow along at home. First, position the point at the end (on the
+  line with the partridge), and:
+
+  - C-x C-k C-c
+  - 1
+  - Return (to set a counter to 1)
+  - F3
+  - C-a
+  - F3
+  - Spacebar
+  - C-n
+  - F4
+
+  Yes, hitting the F3 key twice (once to start the macro, and again to
+  insert the value of the counter) is a bit odd. You can also use the
+  binding: C-x C-k C-i
+
+  Each time you hit F4, you increment the counter that is inserted.
+
+  By the way, if you didn’t do the whole =C-x C-k C-c= to set the
+  counter to 1, the first value would be 0.  Read [[info:emacs#Keyboard%20Macro%20Counter][the manual]] for
+  details.
+
+* Fixing Macros
+
+  Now that you are a Level 5 Elf Keyboard Macro-er, and you can now
+  sling macros everywhere, you may notice that sometimes, in the
+  middle of a long macro, you flub it.
+
+  If you hit F4 too soon (it happens), hit: C-u C-u F3 to pick up
+  where you left off and enter the rest of the macro. Hit F4 when you
+  are really finished.
+
+  If you need to fix a keyboard macro with more finesse, type:
+
+      C-x C-k C-e
+
+  And behold the glory. Tis a simple language that should be pretty
+  obvious to a skilled Macro-er as yourself. Type C-h m once in that
+  buffer to display details of how to edit the macro.  When you are
+  finished editing, type: C-c C-c
+
+  I’ll let you play around with your own example for this one.
+  Read [[info:emacs#Edit%20Keyboard%20Macro][the manual]] for complete details.
+
+* Variations on a Theme
+
+  To gain the Level 7 Keyboard Macro-er title, one should know how to
+  customize a macro while running it. This should require an example
+  where everything to change is similar, but slightly different.
+
+  We will then point the reader to [[info:emacs#Keyboard%20Macro%20Query][the manual]] for details.
