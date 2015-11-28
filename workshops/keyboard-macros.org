@@ -179,7 +179,7 @@ Pretty much treat the rest of this document as a text file.
   - C-a
   - F3
   - Spacebar
-  - C-n
+  - C-p
   - F4
 
   Yes, hitting the F3 key twice (once to start the macro, and again to
