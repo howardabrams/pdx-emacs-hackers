@@ -2,11 +2,12 @@
 #+AUTHOR: Howard Abrams
 #+DATE:   2015 Nov 24
 #+TAGS:   emacs workshop
+#+STARTUP: hideblocks
 
 Basic idea of this file is to be both a *guide* and a *practice pad*
 for leveling up on Emacs’ keyboard macro system.
 
-To use, just download this file to your system, and edit it in Emacs.
+To use, just [[https://github.com/howardabrams/pdx-emacs-hackers/raw/master/workshops/keyboard-macros.org][download this file]] to your system, and edit it in Emacs.
 Then just follow along... If you are not familiar with org-mode files,
 here are the basics for this workshop:
 
@@ -21,6 +22,7 @@ Pretty much treat the rest of this document as a text file.
 
   Let’s begin with something simple to try out this project.
   In the /block area/ below, hit: C-c ' (yes, the apostrophe).
+  When done with the tasks, hit: C-x C-s to close and return here.
 
   #+BEGIN_SRC org
     - this should be interesting
@@ -179,7 +181,7 @@ Pretty much treat the rest of this document as a text file.
   - C-a
   - F3
   - Spacebar
-  - C-p
+  - C-n
   - F4
 
   Yes, hitting the F3 key twice (once to start the macro, and again to
@@ -217,7 +219,90 @@ Pretty much treat the rest of this document as a text file.
 * Variations on a Theme
 
   To gain the Level 7 Keyboard Macro-er title, one should know how to
-  customize a macro while running it. This should require an example
-  where everything to change is similar, but slightly different.
+  customize a macro /while/ running it. The following section of HTML
+  code needs some textual changes. We want to add one of the following
+  phrases to the /end/ of every paragraph that has a =class= of =change=:
 
-  We will then point the reader to [[info:emacs#Keyboard%20Macro%20Query][the manual]] for details.
+  * Because I said so. Got it?
+  * Because I'm the boss. Got it?
+  * You heard me. Got it?
+  * Just do it. Got it?
+
+  To begin, first move to the following block (hint: C-c M-f) and hit
+  TAB to collapse the block (you gotta see all the instructions,
+  right?)  Next, issue a C-c ' on this block to show it in a new
+  window. If you have trouble with your HTML mode, change the =html=
+  to =text=.
+
+  #+BEGIN_SRC html
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <p>
+          Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.
+          Praesent augue.  Sed diam.  Nunc eleifend leo vitae magna.  Nunc
+          rutrum turpis sed pede.
+        </p>
+        <p class="change">
+          Nullam rutrum.  Nunc rutrum turpis sed pede.
+        </p>
+        <p>
+          Phasellus at dui in ligula mollis ultricies.  Curabitur lacinia
+          pulvinar nibh.  Donec pretium posuere tellus.  Praesent
+          fermentum tempor tellus.  Proin quam nisl, tincidunt et, mattis
+          eget, convallis nec, purus.
+        </p>
+        <p class="change">
+          Fusce sagittis, libero non molestie mollis, magna orci ultrices
+          dolor, at vulputate neque nulla lacinia eros.  Sed diam.  Nam
+          vestibulum accumsan nisl.
+        </p>
+        <p>
+          Aliquam feugiat tellus ut neque. Nam vestibulum accumsan
+          nisl. Praesent fermentum tempor tellus.
+        </p>
+        <p>
+          Vivamus id enim.  Suspendisse potenti.  Curabitur lacinia
+          pulvinar nibh.  Mauris ac felis vel velit tristique imperdiet.
+        </p>
+        <p class="change">
+          Donec vitae dolor.  Mauris ac felis vel velit tristique
+          imperdiet.  Nunc aliquet, augue nec adipiscing interdum, lacus
+          tellus malesuada massa, quis varius mi purus non odio.  Proin
+          quam nisl, tincidunt et, mattis eget, convallis nec, purus.  Nam
+          euismod tellus id erat.
+        </p>
+        <p>
+          Nullam rutrum.
+        </p>
+      </body>
+    </html>
+  #+END_SRC
+
+  Type the following:
+
+  - F3
+  - C-s
+  - Type: class="change"
+  - C-e
+  - C-s
+  - Type: </p>
+  - C-p
+  - C-e
+  - C-x q
+  - Type: Got it?
+  - C-n
+  - F4
+
+  In this particular case, we actually didn't do anything special, so
+  move to the beginning of the buffer, and hit F4, and the cursor will
+  go to the end of every paragraph that needs changing, and stop with
+  a prompt:
+
+  Proceed with macro? (Y, N, RET, C-l, C-r)
+
+  Type C-r and begin typing one of our phrases, and when you are done,
+  type: C-M-c
+
+  The prompt will be re-displayed, so finish the macro with 'Y'.
+  Check out [[info:emacs#Keyboard%20Macro%20Query][the manual]] for details on this =C-x q= business.
