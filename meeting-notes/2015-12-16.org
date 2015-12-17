@@ -1,0 +1,78 @@
+#+TITLE:  Notes from Third Meeting
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Dec 16
+#+TAGS:   emacs community
+
+* Agenda
+
+  - Introductions
+  - Language Interconnections:
+    - Pythonic prestidigitation
+    - Clojure conjuring
+  - Keyboard Macro Workshop
+  - Lightning Talks
+  - Transfer to Local Pub for Office Hours
+
+  Thanks again to /CrowdCompass/ for Hosting Us!
+
+* Python
+
+  Chris Freeman did a great job of stepping us through an easy
+  configuration for editing Python in Emacs.
+
+  - Use ELPY as a one stop shop for everything Python.
+  - Integrates nicely with =company-mode=
+  - Also integrates with flycheck-mode for lint and other errors
+  - py-autopep8 will clean up lint-errors on save-buffer
+  - (elpy-use-ipython)
+  - (ido-enable-flex-matching t)
+
+  (Chris: I think it would be great just to embed your notes directly
+  in here)
+
+* Ruby and Clojure
+
+  As a quick /getting started/ guide for setting up either [[https://github.com/howardabrams/dot-files/blob/master/emacs-ruby.org][Ruby]] or
+  [[https://github.com/howardabrams/dot-files/blob/master/emacs-clojure.org][Clojure]] using the [[https://github.com/jwiegley/use-package][use-package project]], see the configuration files
+  in Howard Abrams' [[https://github.com/howardabrams/dot-files][dot-files repository]].
+
+* Workshop on Keyboard Macros
+
+  Download the [[https://github.com/howardabrams/pdx-emacs-hackers/blob/master/workshops/keyboard-macros.org][keyboard-macros.org]] file from our group's Github
+  repository, and follow along the fun in leveling up on keyboard
+  macros.
+
+  Feedback: While we went through the workshop too quickly, is the
+  idea good? Is the format useful? Should we do more?
+
+* Lightning Talks
+** Selective Tangling
+
+   Will Clifford wrote a couple of Emacs functions to determine
+   whether to tangle an org-mode file block to its source code.
+
+** Other Notes
+
+   We have a Google Group: https://groups.google.com/d/forum/emacs-pdx
+
+   Please join this, as we will probably shift from Meetup to using it
+   for all announcements and discussions.
+
+* Office Hours
+
+  One conversation that came out of tonight's chatter at Kell's was
+  doing /symbolic ligatures/ using either [[https://github.com/tonsky/FiraCode][Fira]] or [[https://github.com/i-tu/Hasklig][Hasklig]] fonts and
+  convert symbols like =->= into a wider arrow symbol in code.
+
+  *Note*: If you use a port of Emacs to the Mac, you can call this
+  function:
+
+  #+BEGIN_SRC elisp
+    (mac-auto-operator-composition-mode)
+  #+END_SRC
+
+  Otherwise, use [[https://github.com/howardabrams/dot-files/blob/master/emacs-client.org#ligatures-in-code][the code located here]]. The end result is normal
+  symbols in your code, are displayed like:
+
+  [[https://github.com/tonsky/FiraCode/raw/master/showcases/all_ligatures.png]]
