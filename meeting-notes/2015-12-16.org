@@ -61,18 +61,37 @@
 
 * Office Hours
 
-  One conversation that came out of tonight's chatter at Kell's was
-  doing /symbolic ligatures/ using either [[https://github.com/tonsky/FiraCode][Fira]] or [[https://github.com/i-tu/Hasklig][Hasklig]] fonts and
-  convert symbols like =->= into a wider arrow symbol in code.
+  Once again, we retired to Kell's for continuing discussions. The
+  following is some notes that I gathered. Feel free to add more...
 
-  *Note*: If you use a port of Emacs to the Mac, you can call this
-  function:
+** Symbolic Ligatures
 
-  #+BEGIN_SRC elisp
-    (mac-auto-operator-composition-mode)
-  #+END_SRC
+   One conversation that came out of tonight's chatter at Kell's was
+   doing /symbolic ligatures/ using either [[https://github.com/tonsky/FiraCode][Fira]] or [[https://github.com/i-tu/Hasklig][Hasklig]] fonts and
+   convert symbols like =->= into a wider arrow symbol in code.
 
-  Otherwise, use [[https://github.com/howardabrams/dot-files/blob/master/emacs-client.org#ligatures-in-code][the code located here]]. The end result is normal
-  symbols in your code, are displayed like:
+   *Note*: If you use a port of Emacs to the Mac, you can call this
+   function:
 
-  [[https://github.com/tonsky/FiraCode/raw/master/showcases/all_ligatures.png]]
+   #+BEGIN_SRC elisp
+     (mac-auto-operator-composition-mode)
+   #+END_SRC
+
+   Otherwise, use [[https://github.com/howardabrams/dot-files/blob/master/emacs-client.org#ligatures-in-code][the code located here]]. The end result is normal
+   symbols in your code, are displayed like:
+
+   [[https://github.com/tonsky/FiraCode/raw/master/showcases/all_ligatures.png]]
+
+** Competing with Light Table
+
+   Frank mentioned how he liked a feature in Light Table, where you
+   could set up a /buffer/ of expressions, and when you modify a
+   function, it re-evaluates the expressions automatically... yeah,
+   kinda like running unit tests, but more interactive.
+
+   Without actually seeing Light Table, I (Howard) figured I would
+   build something similar. I made a really preliminary stab at the
+   process, but it seems to work.
+
+   Grab the [[https://github.com/howardabrams/dot-files/blob/master/elisp/cider-always-eval.el][source code]] and... well, you probably know what to do with
+   it. I am curious how helpful this will be.
