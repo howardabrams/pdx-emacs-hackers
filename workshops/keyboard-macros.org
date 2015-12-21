@@ -25,19 +25,19 @@ Pretty much treat the rest of this document as a text file.
   When done with the tasks, hit: C-x C-s to close and return here.
 
   #+BEGIN_SRC org
-    - this should be interesting
-    - nulla posuere
-    - nullam tempus
-    - etiam laoreet quam sed arcu
-    - donec hendrerit tempor tellus
-    - mauris mollis tincidunt felis
-    - etiam laoreet quam sed arcu
-    - nullam rutrum
-    - sed diam
-    - lorem ipsum dolor sit amet, consectetuer adipiscing elit
-    - mauris ac felis vel velit tristique imperdiet
-    - fusce suscipit, wisi nec facilisis facilisis, est dui fermentum leo, quis tempor ligula erat quis odio
-    - donec hendrerit tempor tellus
+ * Activities [0/11]
+    - [ ] this should be interesting
+    - [ ] nulla posuere
+    - [ ] nullam tempus
+    - [ ] etiam laoreet quam sed arcu
+    - [ ] donec hendrerit tempor tellus
+    - [ ] mauris mollis tincidunt felis
+    - [ ] etiam laoreet quam sed arcu
+    - [ ] nullam rutrum
+    - [ ] lorem ipsum dolor sit amet, consectetuer adipiscing elit
+    - [ ] mauris ac felis vel velit tristique imperdiet
+    - [ ] fusce suscipit, wisi nec facilisis facilisis, est dui fermentum leo, quis tempor ligula erat quis odio
+    - [ ] donec hendrerit tempor tellus
   #+END_SRC
 
   Notice that the frame is split with this document still visible?
