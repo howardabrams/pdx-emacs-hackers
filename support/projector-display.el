@@ -37,7 +37,12 @@
 ;;
 ;;; Code:
 
-(require 'demo-it)
+(when (not (require 'use-package nil t))
+  (package-install 'use-package))
+
+(use-package demo-it
+  :ensure t)
+
 
 (defun pdx-emacs-display ()
   "Display the PDX Emacs Hackers logo and agenda."
