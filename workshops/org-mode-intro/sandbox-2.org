@@ -1,0 +1,37 @@
+#+TITLE:  Second Org Sandbox
+#+AUTHOR: (your name)
+#+EMAIL:  (your email)
+#+DATE:   2016 Jan 20
+#+TAGS:   orgmode
+
+* Text Paragraphs
+
+  To help identify paragraphs and their sub-section, the left-side can
+  be indented with spaces to line up with header. Both =TAB= and =M-q=
+  works as *expected*.
+
+Play around with formatting this paragraph.
+Sed bibendum. Integer placerat tristique nisl. Etiam laoreet quam sed arcu. Vivamus id enim.
+Nunc porta vulputate tellus.
+Fusce commodo.
+Nullam rutrum.  Phasellus at dui in ligula mollis ultricies.  Mauris ac felis vel velit tristique imperdiet.
+
+* Some Lists
+
+  - Donec pretium posuere tellus.
+  - Etiam laoreet quam sed arcu.
+  - Phasellus at dui in ligula mollis ultricies.
+  - Donec pretium posuere tellus.
+  - Nullam libero mauris, consequat quis, varius et, dictum id, arcu.
+  - Nullam tempus.
+  - Nullam tempus.
+  - Donec pretium posuere tellus.
+  - Donec vitae dolor.
+  - Etiam laoreet quam sed arcu.
+
+* Tables
+
+  Here is a table:
+
+  | Bottle | Distillery | Date |
+  |-

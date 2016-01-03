@@ -1,0 +1,187 @@
+#+TITLE:  Introduction to Org Mode
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Dec 19
+#+TAGS:   emacs presentation org-mode
+
+* Structural Basics
+
+  We'll begin this session by creating an org-mode file with a number
+  of /sections/ and learn how to move and manipulate them.
+
+  #+BEGIN_QUOTE
+        If you are the host or running this as in the presentation mode,
+        advance these instructions with =F12= ...
+  #+END_QUOTE
+
+** Creating Sections
+
+  Create a file called: =sandbox.org=
+
+  Enter a lot of headers and sub-headers
+  - Top-level headers have a single asterisk at start of line
+  - Sub-level headers have more than one asterisk
+
+  #+BEGIN_SRC org
+  * Top Header One
+  ** Sub header A
+  ** Sub header B
+  ** Sub header C
+  * Top Header Two
+  ** Nudder Nested Header
+  #+END_SRC
+
+  Type some words and whatnot under the headers to
+  create /sections/.
+
+** Easier Headers
+
+   Instead of typing the astericks, this is Emacs, and
+   we have key-bindings for easily creating org-mode
+   formatting code.
+
+   - =C-RET= :: to create a header section of the same level
+   - =M-<Right>= :: increases sub-header
+   - =M-<Left>= :: decreases sub-header
+
+** Moving Between Sections
+
+   While all of the standard Emacs movement keybindings work, try:
+
+   - =C-c n= :: To move to the next section header (or =C-M-n=)
+   - =C-c p= :: To move to the previous section header (=C-M-p=)
+   - =C-c f= :: To move to header at the same level (on
+              top-level? go to the next top-level)
+   - =C-c b= :: To move to previous header at same level
+   - =C-c C-^= ::  To move to the parent header
+
+   Good features to focus on a section:
+
+   - =C-x n s= :: To narrow to the org-mode section
+   - =C-x n w= :: To widen back to the full text
+   - =C-x n o= :: To either narrow or widen ... DWIM
+
+** Collapsing Sections
+
+   Now that you have the basics of org-mode sections,
+   Load the example file: =sandbox-2.org=
+
+   #+BEGIN_QUOTE
+   Note: If you are hosting this demonstration,
+   hit =C-F12= to load the file.
+   #+END_QUOTE
+
+   Notice that all you see are the top-level sections!
+
+   Move to the first section (=C-c C-n=) and hit =TAB=
+
+   Hit it again.
+
+   Hit: =Shift-TAB= ... Do that multiple times.
+
+   Get it? Don't worry about the contents.
+
+** Section Summary
+
+   You should now be able to:
+
+   - Create sections and sub-sections by defining headers
+   - Quickly move between the sections
+   - Use various way to focus on a section
+
+   We'll use the =sandbox-2.org= file for the rest of session.
+
+* Text and Paragraphs
+
+  In this part, we'll play around with regular text entry
+  with the =sandbox-2.org= file.
+
+  Move to the first section (*Paragraphs*), and type: =C-x n s=
+
+** Paragraphs
+
+   org-mode works well with [[info:emacs#Visual%20Line%20Mode][Visual Line Mode]], or
+   with [[info:emacs#Fill%20Commands][Fill Commands]].
+
+   Many like to indent the text to align with the
+   header level. Try indenting and filling this text.
+
+   If you have an [[http://www.emacswiki.org/emacs/UnfillParagraph][Unfill Paragraph]] code, try converting
+   it to a single line with =visual-line-mode= on (to
+   create a single line, use: =C-x f 999 RET M-q=.
+
+** Bold, Italics and Whatnot
+
+   Like Wikis and Markdown, org-mode has its formatting
+   abilities. Surround text with the following
+   characters:
+
+   - Bold :: Surrounded with *asterisks*: *
+   - Italics :: Surrounded with /slashes/: /
+   - Underline :: Surrounded with _under-bars_: _
+   - Fixed-width :: Surrounded with =equal signs=: =
+
+   Check out [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#user-content-block-wrappers][insert-pair or wrap-region]] to make this easier.
+   Oh, and the formatting characters can be hidden to make your Emacs
+   look like a word processor.
+
+** Links
+
+   Links make =org-mode= better than Markdown in Emacs.
+
+   Copy or type the following into your file:
+
+   #+BEGIN_SRC org
+   This links to [[http://www.google.com][Google]].
+   #+END_SRC
+
+   Clicking a link opens the default browser.
+
+   Make another link by highlighting some words, and typing: =C-c C-l=
+   Links can refer to files:
+
+   #+BEGIN_SRC org
+   Like your [[file:~/.emacs][[Emacs Configuration]] file.
+   #+END_SRC
+   Or to internal headers in the same file:
+
+   #+BEGIN_SRC org
+   Like this: [[*Links][Links]]
+   #+END_SRC
+
+   Or even to the [[info:org#Hyperlinks][internal Emacs documentation]], or (with Tramp)
+   reference files on remote machines.
+
+** Lists
+
+   Open up the next section, *Some Lists*, and position the point at
+   the end (where it says =sed arcu=).
+
+   Type =M-RET= to enter a new list element.
+
+   Type =M-<Up Arrow>= to move that element up the chain.
+
+   Type =M-<Right Arrow>= to make that element a sub-list.
+
+** Tables
+
+   Tables are just data cells separated by vertical bars. Move to the
+   /dash/ character in the *Tables* section:
+
+   #+BEGIN_SRC org
+     | Bottle | Distillery | Date |
+     |-
+   #+END_SRC
+
+   Hit the tab key, and the rest of the cells will be formatted, and a
+   header row inserted.
+
+   Type information, and you'll notice the =|= character moving
+   screwing up the alignment. No problem, just hit =TAB= again, and
+   all is restored.
+
+   Check out [[info:org#Built-in%20table%20editor][the documentation]] for simple tables.
+
+   Tables are mini-spreadsheets and can automatically calculate
+   columns and other calculations, but we are going to frustrate you
+   by moving on to other features.
