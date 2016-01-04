@@ -35,3 +35,28 @@ Nullam rutrum.  Phasellus at dui in ligula mollis ultricies.  Mauris ac felis ve
 
   | Bottle | Distillery | Date |
   |-
+
+* Blocks
+
+  Here are some blocked structure to play with:
+
+  #+BEGIN_QUOTE
+     To quote someone or something is divine.
+  #+END_QUOTE
+
+  Type TAB on the "BEGIN" line to collapse it.
+
+  #+BEGIN_EXAMPLE
+     To quote someone or something is divine.
+  #+END_EXAMPLE
+
+  Especially source code (notice the language mode):
+
+  #+BEGIN_SRC ruby
+    [1, 2, 3, 5, 7, 11, 13].each do |prime|
+       puts prime
+    end
+  #+END_SRC
+
+  Type C-c and then ' to edit the source code block in a ruby buffer.
+  Type C-x C-s to return.

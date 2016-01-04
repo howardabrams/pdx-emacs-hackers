@@ -6,8 +6,13 @@
 
 * Structural Basics
 
+  Time to learn ORG MODE!!
+
   We'll begin this session by creating an org-mode file with a number
   of /sections/ and learn how to move and manipulate them.
+
+  Our goal for this is to show how org-mode files are better than
+  Markdown, and just as easy to use.
 
   #+BEGIN_QUOTE
         If you are the host or running this as in the presentation mode,
@@ -63,23 +68,18 @@
 
 ** Collapsing Sections
 
-   Now that you have the basics of org-mode sections,
-   Load the example file: =sandbox-2.org=
+   Now that you have the basics of org-mode sections, add some text to
+   one or two sections.
 
-   #+BEGIN_QUOTE
-   Note: If you are hosting this demonstration,
-   hit =C-F12= to load the file.
-   #+END_QUOTE
+   Move the section header (=C-c C-p=) and hit =TAB=
 
-   Notice that all you see are the top-level sections!
+   Hit it again. Notice that section of text is hidden and then shown.
 
-   Move to the first section (=C-c C-n=) and hit =TAB=
+   Hit: =Shift-TAB= ... Do that multiple times to show and hide all
+   the sections.
 
-   Hit it again.
-
-   Hit: =Shift-TAB= ... Do that multiple times.
-
-   Get it? Don't worry about the contents.
+   When Org loads a new file all the top-level sections have been
+   collapsed to show the structure.
 
 ** Section Summary
 
@@ -89,16 +89,26 @@
    - Quickly move between the sections
    - Use various way to focus on a section
 
-   We'll use the =sandbox-2.org= file for the rest of session.
 
 * Text and Paragraphs
 
   In this part, we'll play around with regular text entry
-  with the =sandbox-2.org= file.
+  with the =sandbox-2.org= file, which you can download at:
 
-  Move to the first section (*Paragraphs*), and type: =C-x n s=
+  https://github.com/howardabrams/pdx-emacs-hackers/blob/master/workshops/org-mode-intro/sandbox-2.org
+
+  Or: git clone https://github.com/howardabrams/pdx-emacs-hackers)
+
+  Or: Type really fast as we show off more features.
+
+   #+BEGIN_QUOTE
+   Note: If you are hosting this demonstration,
+   hit =C-F12= to load the file.
+   #+END_QUOTE
 
 ** Paragraphs
+
+   Move to the first section (*Paragraphs*), and type: =C-x n s=
 
    org-mode works well with [[info:emacs#Visual%20Line%20Mode][Visual Line Mode]], or
    with [[info:emacs#Fill%20Commands][Fill Commands]].
@@ -154,27 +164,67 @@
 
 ** Lists
 
-   Open up the next section, *Some Lists*, and position the point at
-   the end (where it says =sed arcu=).
+   Widen the section (=C-x n w=), and open the next section, *Some
+   Lists*.
 
-   Type =M-RET= to enter a new list element.
+   Lists are like headers, but with initial whitespace. We often use
+   dashes instead of astericks, but they work the same way.
 
-   Type =M-<Up Arrow>= to move that element up the chain.
+   Make a list or, if using the sandbox file, position point at the
+   end (where it says =sed arcu=).  (You can focus on this section
+   with =C-x n s=)
 
-   Type =M-<Right Arrow>= to make that element a sub-list.
+   * Type =M-RET= to enter a new list element.
+
+   * Type =M-<Up Arrow>= to move that element up the chain.
+
+   * Type =M-<Right Arrow>= to make that element a sub-list.
+
+   Like a header, =TAB= will collapse the subsections of a list.
+
+** Ordered Lists
+
+   Type a list that starts with a number:
+
+   #+BEGIN_SRC org
+     The stuff I need at the store are:
+
+     1. bread
+   #+END_SRC
+
+   Type =M-RET= to enter a new item. Notice the same keys work for
+   moving the list around, but the order stays the same.
+
+   They can be mixed:
+
+   #+BEGIN_SRC org
+  My favorite scenes in the *Lord of the Rings* are:
+  1. The attack of the Rohirrim
+  2. Eowyn's fight with the witch king
+     + this was already my favorite scene in the book
+     + I really like Miranda Otto.
+  3. Peter Jackson being shot by Legolas
+     - on DVD only
+     He makes a really funny face when it happens.
+  But in the end, no individual scenes matter but the film as a whole.
+  Important actors in this film are:
+  - Elijah Wood :: He plays Frodo
+  - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
+    him very well from his role as Mikey Walsh in The Goonies.
+   #+END_SRC
 
 ** Tables
 
-   Tables are just data cells separated by vertical bars. Move to the
-   /dash/ character in the *Tables* section:
+   A table is just data cells separated by vertical bars.
+   Move to the /dash/ character in the *Tables* section:
 
    #+BEGIN_SRC org
      | Bottle | Distillery | Date |
      |-
    #+END_SRC
 
-   Hit the tab key, and the rest of the cells will be formatted, and a
-   header row inserted.
+   Hit the tab key, and the rest of the cells will be formatted,
+   and a header row inserted.
 
    Type information, and you'll notice the =|= character moving
    screwing up the alignment. No problem, just hit =TAB= again, and
@@ -185,3 +235,47 @@
    Tables are mini-spreadsheets and can automatically calculate
    columns and other calculations, but we are going to frustrate you
    by moving on to other features.
+
+** Blocks
+
+   Blocks are ways to organize paragraphs of text, for instance:
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_QUOTE
+         To quote someone or something is divine.
+     ,#+END_QUOTE
+   #+END_SRC
+
+   (Blocks start with =#+= ... not with the comma you see above)
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_EXAMPLE
+         Use to store log files or other data sections.
+     ,#+END_EXAMPLE
+   #+END_SRC
+
+   Especially source code (notice the language mode):
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_SRC ruby
+          [1, 2, 3, 5, 7, 11, 13].each do |prime|
+             puts prime
+          end
+     ,#+END_SRC
+   #+END_SRC
+
+   Type =C-c '= to edit the source code block in a Ruby buffer.
+   Type =C-x C-s= to return. Type =C-c C-c= to execute it.
+
+** Summary
+
+   At this point, =org-mode= files should be better to you than normal
+   Markdown files for general notes.
+
+   However, we haven't scratched the surface.
+
+   In the next workshop, we'll kick it up a notch, as we can use this to:
+
+   - Organize ourselves
+   - Literate programming
+   - Exporting to web pages and presentations
