@@ -49,6 +49,10 @@
    - =M-<Right>= :: increases sub-header
    - =M-<Left>= :: decreases sub-header
 
+   While you /can/ simply add/remove asterisks, the Meta arrow
+   key-binding also increases the indention of the text in that
+   section.
+
 ** Moving Between Sections
 
    While all of the standard Emacs movement keybindings work, try:
@@ -58,13 +62,12 @@
    - =C-c f= :: To move to header at the same level (on
               top-level? go to the next top-level)
    - =C-c b= :: To move to previous header at same level
-   - =C-c C-^= ::  To move to the parent header
+   - =C-c C-^= ::  To move to the parent header (yeah, odd binding)
 
    Good features to focus on a section:
 
    - =C-x n s= :: To narrow to the org-mode section
    - =C-x n w= :: To widen back to the full text
-   - =C-x n o= :: To either narrow or widen ... DWIM
 
 ** Collapsing Sections
 
@@ -95,7 +98,7 @@
   In this part, we'll play around with regular text entry
   with the =sandbox-2.org= file, which you can download at:
 
-  https://github.com/howardabrams/pdx-emacs-hackers/blob/master/workshops/org-mode-intro/sandbox-2.org
+  http://is.gd/org_sandbox
 
   Or: git clone https://github.com/howardabrams/pdx-emacs-hackers)
 
@@ -159,7 +162,7 @@
    Like this: [[*Links][Links]]
    #+END_SRC
 
-   Or even to the [[info:org#Hyperlinks][internal Emacs documentation]], or (with Tramp)
+   Or even to the [[info:org#Hyperlink][internal Emacs documentation]], or (with Tramp)
    reference files on remote machines.
 
 ** Lists
@@ -184,34 +187,20 @@
 
 ** Ordered Lists
 
-   Type a list that starts with a number:
-
-   #+BEGIN_SRC org
-     The stuff I need at the store are:
-
-     1. bread
-   #+END_SRC
+   In the next section, type a list that starts with a number.
 
    Type =M-RET= to enter a new item. Notice the same keys work for
    moving the list around, but the order stays the same.
 
-   They can be mixed:
+   Try using the =Shift= key with the left and right arrow keys.
+   Slick, huh?
 
-   #+BEGIN_SRC org
-  My favorite scenes in the *Lord of the Rings* are:
-  1. The attack of the Rohirrim
-  2. Eowyn's fight with the witch king
-     + this was already my favorite scene in the book
-     + I really like Miranda Otto.
-  3. Peter Jackson being shot by Legolas
-     - on DVD only
-     He makes a really funny face when it happens.
-  But in the end, no individual scenes matter but the film as a whole.
-  Important actors in this film are:
-  - Elijah Wood :: He plays Frodo
-  - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
-    him very well from his role as Mikey Walsh in The Goonies.
-   #+END_SRC
+   The following functions may be useful if bound since =C-<down>=
+   moves to the next list item and not to the end of the list.
+
+   - =org-beginning-of-item-list= :: Jumps to the beginning of your list
+   - =org-end-of-item-list= :: Jumps to the end of your list
+   - =org-list-make-subtree= :: Converts a regular list into headers
 
 ** Tables
 
@@ -265,17 +254,62 @@
    #+END_SRC
 
    Type =C-c '= to edit the source code block in a Ruby buffer.
+   (Note: First, execute =M-x load-library= and then =ob-ruby=)
+
    Type =C-x C-s= to return. Type =C-c C-c= to execute it.
+   We'll have a full workshop on this /literate programming/.
+   See the [[info:org#Working%20with%20source%20code][Info pages]] for details.
 
-** Summary
+* Exporting
 
-   At this point, =org-mode= files should be better to you than normal
-   Markdown files for general notes.
+  Org mode files can be exported to a variety of formats.
 
-   However, we haven't scratched the surface.
+  Type =C-c C-e= and a Helm-like buffer will appear for all the
+  formats you have loaded.
 
-   In the next workshop, we'll kick it up a notch, as we can use this to:
+  Don't have enough? =M-x load-libary= the following:
 
-   - Organize ourselves
-   - Literate programming
-   - Exporting to web pages and presentations
+  - =ox-html= :: Exports to HTML including direct loading into browser
+  - =ox-freemind= :: Exports to a mind mapping software format
+  - =ox-reveal= :: Exports as a presentation in a browser
+  - =org-tree-slide= :: Displays org-mode as a Presentation in Emacs
+
+* Summary
+
+  At this point, =org-mode= files should be better to you than normal
+  Markdown files for general notes.
+
+  However, we haven't scratched the surface.
+
+  In the next workshop, we'll kick it up a notch, as we can use this to:
+
+  - Organize ourselves
+  - Literate programming
+  - Exporting to web pages and presentations
+
+** Org Capture
+
+   Org comes with a Lisp macro allowing you to quickly add /sections/
+   to org-mode files without interrupting your current workflow.
+   When you call =org-capture=, you may see something like:
+
+   #+BEGIN_EXAMPLE
+   Select a capture template
+   ==============================
+
+   [n]  Thought or Note
+   [j]  Journal Note
+   [t]  Task Entry
+   [e]  Emacs Trick
+   [c]  Clojure Tip
+   [b]  Blog Entry
+   [j]  Journal Entry
+   -----------------------------
+   [C]  Customize org-capture-templates
+   [q]  Abort
+   #+END_EXAMPLE
+
+   What each entry does is customized with a somewhat
+   [[info:org#Capture%20templates][involved Lisp macro]].
+
+   See [[https://github.com/howardabrams/dot-files/blob/master/emacs-org.org#auto-note-capturing][this example]] for ideas.

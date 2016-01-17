@@ -4,7 +4,7 @@
 #+DATE:   2016 Jan 20
 #+TAGS:   orgmode
 
-* Text Paragraphs
+* Paragraphs
 
   To help identify paragraphs and their sub-section, the left-side can
   be indented with spaces to line up with header. Both =TAB= and =M-q=
@@ -18,16 +18,54 @@ Nullam rutrum.  Phasellus at dui in ligula mollis ultricies.  Mauris ac felis ve
 
 * Some Lists
 
-  - Donec pretium posuere tellus.
-  - Etiam laoreet quam sed arcu.
-  - Phasellus at dui in ligula mollis ultricies.
-  - Donec pretium posuere tellus.
-  - Nullam libero mauris, consequat quis, varius et, dictum id, arcu.
-  - Nullam tempus.
-  - Nullam tempus.
-  - Donec pretium posuere tellus.
-  - Donec vitae dolor.
-  - Etiam laoreet quam sed arcu.
+  - Nullam tempus
+    - Donec vitae dolor
+  - Donec pretium posuere tellus
+    - Etiam laoreet quam sed arcu
+    - Phasellus at dui in ligula mollis ultricies
+      - Donec pretium posuere tellus
+      - Pretium posuere tellus donec
+    - Donec pretium posuere tellus
+      - Nullam libero mauris, consequat quis, varius et, dictum id, arcu
+      - Nullam tempus
+  - Donec vitae dolor
+    - Etiam laoreet quam sed arcu
+      - Donec pretium posuere tellus
+      - Etiam laoreet quam sed arcu
+      - Phasellus at dui in ligula mollis ultricies
+    - Nullam libero mauris, consequat quis, varius et, dictum id, arcu
+      - Nullam tempus
+      - Nullam tempus
+      - Donec pretium posuere tellus
+  - Etiam laoreet quam sed arcu
+
+** Ordered Lists
+
+   The stuff I need at the store are:
+
+   1. bread
+   2. cheese
+   3. milk
+
+** Dictionary Lists
+
+   These have the entry and its definition separated by two colons:
+
+   - bear :: large, omnivorous animal that likes dancing in tutus
+   - hippo :: large, hairless herbivore that looks better in tutus
+   - ostrich :: flightless bird with bad temperament and nice sunglasses
+
+** Mixed Lists
+
+   My favorite scenes in the *Lord of the Rings* are:
+
+   1. The attack of the Rohirrim
+   2. Eowyn's fight with the witch king
+      + this was already my favorite scene in the book
+      + I really like Miranda Otto.
+   3. Peter Jackson being shot by Legolas
+      - on DVD only
+      - He makes a really funny face when it happens.
 
 * Tables
 
