@@ -1,0 +1,439 @@
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+*IMPORTANT*: Use C-n, C-p to navigate around and follow the *directions*.
+
+*directions*: Move the cursor to the beginning of the line that says "Fast
+Intro" and hit the TAB button 1 time!
+
+* Fast Intro
+*Welcome* to the Org mode Beginner's Workshop! You just learned how to move
+around and /cycle/ through an org-mode outline. Cycling is what happens when TAB
+is pressed on a *heading*. A heading is denoted by one or more astericks. The
+asterick count represents the level of nesting for the heading.
+
+*directions*: Cycle through the following headings. You will see "..." when a
+heading has more information.
+
+** Org-mode background
+- [[Carsten Dominik][Carsten Dominik]] is the creator of org-mode.
+- He is an astronomer and has to manage lots of notes and todos. When he
+  starts a project he begins with notes and then develops tasks. There were
+  just no good tools for combining note taking and todo management and so
+  org-mode was born.
+- Started in 2003, open source project that is distributed with emacs 24 and on.
+- Why work with text files
+  - portlable formats (read/edit anywhere)
+  - grep and other UNIX tools
+  - Process with perl,python,etc
+  - Problem-free history with version control
+  - Synchronize org files with git
+** Start your engines
+- Make sure your version of emacs is up to date (at least 24) otherwise YMMV
+- If it isn't working then try adding the following to your init.el
+
+#+BEGIN_SRC emacs-lisp
+;;;;org-mode configuration
+;; Enable org-mode
+;(require 'org)
+;; Make org-mode work with files ending in .org
+;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+;; The above is the default in recent emacsen
+#+END_SRC
+
+1. Move cursor inside of the "#+BEGIN_SRC org" and "#+END_SRC" lines.
+2. Type C-c '
+3. The example will appear within a new buffer
+4. Type C-c '
+5. The example will close. Try it below:
+
+#+BEGIN_SRC org
+,* This is not a test
+#+END_SRC
+
+- Great! Now continue learning about Outline mode by following [[Introducing Outline mode][this link]]. click it, place
+  the cursor on the link and type C-c C-o, or use the function
+  /org-open-at-point/.
+
+* Introducing Outline mode
+- Org-mode is fantastic at managing ordered and unordered lists, hyperlinking
+  documents, embedding source code, and so much more. Outline mode is the way to
+  get around in an org file.
+
+*directions*: Run the example below (hint: hit C-c ' inside code blocks) then observe the behavior of
+ the TAB key and S-TAB key.
+
+  #+BEGIN_SRC org
+  ,* Heading
+  ,** Subheading
+     - Here is some information
+  ,*** Subheading
+      - Here is some more information
+  ,* Heading 2
+  ,** Subheading 2.1
+  ,* Settings
+  ,** Another setting
+  ,*** More settings
+
+  #+END_SRC
+
+- What does TAB do?
+When point is at the beginning of a headline, rotate the subtree started by this
+line through 3 different states (local cycling):
+  1. FOLDED:   Only the main headline is shown.
+  2. CHILDREN: The main headline and the direct children are shown.  From this state, you can move to one of the children and zoom in further.
+  3. SUBTREE:  Show the entire subtree, including body text.
+  If there is no subtree, switch directly from CHILDREN to FOLDED.
+
+- What does S-TAB do?
+Global visibility cycling
+  1. OVERVIEW
+  2. CONTENTS
+  3. SHOW ALL
+
+*** Navigating the outline mode
+
+- The main keys you will use to move around are:
+  #+BEGIN_EXAMPLE
+  C-c C-n - move point up one heading
+  C-c C-p - move point down one heading
+  C-c C-b - move point up one heading on same level
+  C-c C-f - move point down one heading on same level
+
+  TAB     - cycle local visibility
+  S-TAB   - cycle globabl visibilty
+
+  M-UP    - move heading up one
+  M-DOWN  - move heading down one
+  M-RIGHT - increase heading indentation
+  M-LEFT  - decrease heading indentation
+  #+END_EXAMPLE
+
+- Experiment with the previous keybindings in the following example:
+  #+BEGIN_SRC org
+  ,* Book Outline - Business Secrets of the Pharaohs
+  ,** Chapter 3 - Egypt and Wall Street
+  ,*** Yadda yadda yadaa
+  ,**** Phasellus neque orci, porta a, aliquet quis, semper a, massa.
+  ,**** Nullam tristique diam non turpis.
+  ,**** Aliquam posuere.
+  ,**** Nunc rutrum turpis sed pede.
+  ,*** Blah Blah Blah
+  ,**** Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+  ,***** vivamus id enim.
+  ,****** Nullam rutrum.
+  ,** Chapter 2 - Ancient Economics
+  ,*** Curabitur lacinia pulvinar nibh.
+  ,**** Mauris mollis tincidunt felis.
+  ,*** Nullam eu ante vel est convallis dignissim.
+  ,**** Nulla facilisis, risus a rhoncus fermentum, tellus tellus lacinia purus, et dictum nunc justo sit amet elit.
+  ,**** Aenean in sem ac leo mollis blandit.
+  ,***** Nunc rutrum turpis sed pede.
+  ,** Chapter 4 - Title pending
+  ,*** Aliquam erat volutpat.
+  ,**** Nullam libero mauris, consequat quis, varius et, dictum id, arcu.
+  ,**** Nam euismod tellus id erat.
+  ,**** Nam euismod tellus id erat.
+  ,** Chapter 1 - Correlations or Lack Thereof
+  ,*** Cras placerat accumsan nulla.
+  ,*** Donec hendrerit tempor tellus.
+  ,**** Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+  ,* References
+  ,** Referemce 1
+  *** more information
+
+  #+END_SRC
+
+- If you have made it this far, you now have what it takes navigate around an
+  org document. But what fun is that? Click [[Simple todo list][this link]] to see how to create a
+  simple todo list.
+* Simple todo list
+- This simple todo list features the same old headings we are used you. In
+  addition to the heading we now have *TODO* and *DONE* *states* associated with the
+  heading.
+  #+BEGIN_EXAMPLE
+  C-c Return - Insert a new todo item
+  S-Right    - Toggle through item states
+  S-Left     - Toggle through item states
+  C-c t      - Toggle the state of a todo item
+  #+END_EXAMPLE
+
+*directions*: use the keybindings above to experiment with the following example:
+
+  #+BEGIN_SRC org
+  ,* Stuff I must do
+  ,** Run a 5k
+  ,** Return package to seller
+  ,** TODO Invoice project X for 1 billion dollars
+  ,** TODO Read latest documentation on technology Y
+  ,** TODO Practice guitar for 1 hour
+  ,** TODO Debug gaming pc's videocard
+  ,** TODO Backup the backup of the backup
+  ,** TODO Buy flowers
+  ,** TODO Take out the compost
+  ,** DONE Think about emacs
+#+END_SRC
+
+- Next, learn about *checkboxes* by creating [[A%20Grocery%20List][a grocery list]].
+* A Grocery List
+- In this example, we are keeping track of what foods we like and we can see at
+  a glance which items should be stocked.
+
+#+BEGIN_EXAMPLE
+C-c C-c    - toggle checkbox marked
+C-c -      - turn headline into a plain list entry
+C-c *      - turn a plain list entry into a headline
+C-c Return - create a new plain list entry above or below line; dependent on cursor position (start or end of line)
+[/]        - type at end of heading to display a checklist counter
+#+END_EXAMPLE
+
+*directions*: Experiment with the keybindings above to create new entries and
+toggle checkboxes.
+
+#+BEGIN_SRC org
+,* A Grocery list
+,*note*: [X] denotes stocked
+        [ ] denotes not stocked
+,** Meats [4/9]
+- [ ] Chicken breast
+- [ ] Salmon cutlets
+- [X] Tuna
+- [X] Sardines
+- [ ] Steak
+- [ ] Bacon
+- [X] Eggs
+- [X] Beef Kielbasa
+- [ ] Pork shoulder
+,** Dairy [3/5]
+- [X] Whole Milk
+- [X] Cottage Cheese
+- [X] Muenster Cheese
+- [ ] Greek Yoghurt
+- [ ] Butter
+,** Veggies [1/6]
+- [ ] Carrots
+- [ ] Broccoli
+- [X] Spinash
+- [ ] Celery
+- [ ] Cauliflower
+- [ ] Avocado
+,** Other [2/7]
+- [ ] Bananas
+- [X] Bread
+- [ ] Pasta
+- [ ] Green Tea
+- [X] Earl Grey Tea
+- [ ] Sparkling Water
+- [ ] Olive Oil
+
+#+END_SRC
+
+- Hey, nice progress! Next on the agenda is to learn about *tags* and *properties*. We will
+  utilize everything we know so far to make [[A reading list][a reading list]].
+
+* A reading list
+  - Everybody should have a reading list. You can track across categories like
+    reading, read, and to-read. But you can also track the page you are on and
+    take notes right in org-mode.
+  - *tags* come at the end of a heading and look like this ":foo:" and ":foo:bar:"
+  - *properties* are key-value pairs of data associated with a heading.
+    - the properties are in a "drawer" which stays closed while cycling.
+    - open the :properties: drawer by placing curson on it and TAB.
+
+  #+BEGIN_EXAMPLE
+  C-c C-z                   - Add a note to a heading
+  C-c C-c (on heading)      - Add a tag to a heading
+  C-c C-c (on checkbox)     - Toggle checkbox checked
+  C-c C-c (on :PROPERTIES:) - Manage properties
+  C-c C-x p                 - Set property
+  #+END_EXAMPLE
+
+*directions*: Experiment with the commands you know and the new commands with
+the following example:
+
+  #+BEGIN_SRC org
+  ,* TODO My Reading List
+  ,** currently
+
+  ,*** TODO structure interpretation of computer programs         :compsci:lisp:
+      :PROPERTIES:
+      :PAGECOUNT: 350
+      :CURRENTPAGE: 100
+      :AUTHOR:   Harold Abelson,Gerald Jay Sussman,Julie Sussman
+      :PUBLISHER: MIT Press
+      :END:
+      - Note taken on [2016-01-19 Tue 02:33] \\
+        read for 1 hour. page 45
+  ,**** Chapters Outline [1/4]
+  - [X] Chapter 1
+  - [-] Chapter 2 [1/3]
+    - [-] Sec 1
+      - [ ] Sec 1a
+      - [X] Sec 1b
+      - [X] Sec 1c
+      - [X] Sec 1d
+    - [X] Sec 2
+      - [X] Sec 1a
+    - [ ] Sec 3
+  - [-] Chapter 3 [2/4]
+    - [X] Sec 1a
+    - [X] Sec 1b
+    - [ ] Sec 1c
+    - [ ] Sec 1d
+  - [-] Chapter 4 [2/4]
+    - [ ] Sec 1a
+    - [X] Sec 1b
+    - [ ] Sec 1c
+    - [X] Sec 1d
+
+  ,**** Chapter Notes
+  ,***** Chapter 1                                                   :economics:
+  - Nam vestibulum accumsan nisl.
+  - In id erat non orci commodo lobortis.
+  - Etiam vel neque nec dui dignissim bibendum.
+  - Nam vestibulum accumsan nisl.
+  - Vestibulum convallis, lorem a tempus semper, dui dui euismod elit, vitae
+    placerat urna tortor vitae lacus.
+  - Donec neque quam, dignissim in, mollis nec, sagittis eu, wisi.  Nullam
+    tristique diam non turpis.
+  ,***** Chapter 2                                                :world:impact:
+  1. Nullam rutrum.
+  2. Mauris ac felis vel velit tristique imperdiet.
+  3. Phasellus purus.  Aliquam erat volutpat.  Aliquam posuere.  Aliquam erat volutpat.
+  4. Phasellus at dui in ligula mollis ultricies.  Nunc porta vulputate tellus.  Nullam tempus.
+     1. Nulla facilisis, risus a rhoncus fermentum, tellus tellus lacinia purus, et dictum nunc justo sit amet elit.
+     2. Phasellus at dui in ligula mollis ultricies.
+     3. Aliquam erat volutpat.
+  5. Phasellus purus.  Nam euismod tellus id erat.  Pellentesque tristique imperdiet tortor.  Nullam tempus.
+  ,***** Chapter 3                                             :digitalcurrency:
+  ,****** Something else
+         1. Nam a sapien.  Phasellus at dui in ligula mollis ultricies.  Praesent augue.
+         2. Praesent augue.  Curabitur vulputate vestibulum lorem.  Aliquam feugiat tellus ut neque.
+  ,***** Chapter 4                                                   :economics:
+  - Phasellus at dui in ligula mollis ultricies.Phasellus at dui in ligula mollis
+    ultricies.
+  - Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
+    ridiculus mus.
+  ,** Finished
+  ,*** TODO Some new book
+  ,*** DONE Book X                                           :comedy:nonfiction:
+  ,*** DONE Book Y                                               :drama:fiction:
+  ,*** DONE Book Z                                                     :history:
+  ,** Queue
+  ,*** Book A                                                   :comedy:fiction:
+  ,*** Book B                                               :nonfiction:history:
+  ,*** Book C                                                      :programming:
+  ,*** Book D                                                       :lisp:emacs:
+
+  #+END_SRC
+
+Go on and learn more about [[A%20Linking%20Tutorial][linking]] in org-mode.
+* A Linking Tutorial
+  - It can be really useful to link directly to other documents, emails, and web
+    pages right there in your notes.
+
+  #+BEGIN_EXAMPLE
+  C-c C-l       - Insert a link
+  C-c l         - Store a link to the current location
+  C-c C-o       - Open link
+  C-u C-c C-l   - Insert a link to a file
+  C-c C-x C-n   - Visit next link
+  C-c C-x C-p   - Visit previous link
+  C-c %         - Push the current position onto the mark ring
+  C-c &         - Jump back to a recorded position.
+  [[url][desc]] - Literally typing in a link
+  #+END_EXAMPLE
+
+  - Use the keybindings above to experiment with the following cs50 syllabus list:
+
+  #+BEGIN_SRC org
+  ,* Resources
+   - [[https://courses.edx.org/courses/HarvardX/CS50x3/2015/courseware/43d165ac1d974f20a55585da76d39277/010c11db84a647e39a42cd191035b499/][CS50 Main Page EDX]]
+    - [[https://courses.edx.org/courses/HarvardX/CS50x3/2015/info][Course Information]]
+    - [[https://youtu.be/vpy_C36d_Eg][Intro Video]]
+    - [[https://courses.edx.org/courses/HarvardX/CS50x3/2015/a7ec0c0a7b6e460f877da0734811c4cd/][Discussion]]
+    - [[https://www.reddit.com/r/cs50]]
+  ,* Week 0
+  ,** Lectures [2/2]
+    - [X] [[https://youtu.be/zFenJJtAEzE][Lecture]]
+    - [X] [[https://youtu.be/UuFWYOnHwGM][Lecture Continued]]
+  ,** Walkthroughs [9/15]
+     - [X] [[https://youtu.be/tveoFN0NHE0][Hello Scratch]]
+     - [X] [[https://youtu.be/kjqREWts-WU][Meow]]
+     - [X] [[https://youtu.be/92ALk-oEjis][Meow Resources]]
+     - [X] [[https://youtu.be/OGY8lbrvN_Y][Meow Meow Meow]]
+     - [X] [[https://youtu.be/jneprjYU-wM][Pet The Cat]]
+     - [X] [[https://youtu.be/982SmMd0wgI][Don't Pet The Cat]]
+     - [X] [[https://youtu.be/U7z503AVryY][Hi Hi Hi]]
+     - [ ] [[https://youtu.be/9s3cZ3DBUwE][Counting Sheep]]
+     - [ ] [[https://youtu.be/2_7oC9QW3j8][Cough-0]]
+     - [ ] [[https://youtu.be/gb341GXeskk][Cough-1]]
+     - [ ] [[https://youtu.be/u-vSE5alMdw][Cough-2]]
+     - [ ] [[https://youtu.be/HchQ1p-is5A][Cough-3]]
+     - [ ] [[https://youtu.be/1yG1uUH-sCw][Cough-4]]
+     - [X] [[https://youtu.be/G3z6aIwi_JA][Threads]]
+     - [X] [[https://youtu.be/bgfiyeEDz-U][Events]]
+
+  ,** Shorts [5/5]
+     - [X] [[https://youtu.be/HFLczUUHWNw][Algorithms]]
+     - [X] [[https://youtu.be/UPlR4eMMCmI][ASCII Resources]]
+     - [X] [[https://youtu.be/hacBFrgtQjQ][Binary Resources]]
+     - [X] [[https://youtu.be/52JoFF4HMA4][Scratch Resources]]
+     - [X] [[https://youtu.be/3YD66bHehhQ][Threads Resources]]
+
+  ,** Problem Set 0: Scratch
+     - To submit this problem set, visit http://cs50.edx.org/2016/psets/0/. You’ll
+       find that a few questions await. Be extra-sure that your answers are
+       correct, particularly your project’s URL on MIT’s website, lest we overlook
+       your submission!
+     - [ ] http://cdn.cs50.net/2016/x/psets/0/pset0/pset0.html
+  ,* Week 1
+  ,* Week 2
+  ,* Week 3
+  * Week 4
+  #+END_SRC
+* Your Personal Wiki
+** About Section
+   Hey, I'm /me/. I *love* [[Movies][Movies]], [[Music][Music]], and [[Writing][Writing]].
+** Movies
+*** The Big Lebowski
+*** Vanilla Sky
+*** The Matrix
+*** The Royal Tenenbaums
+*** Documentaries
+**** [[https://youtu.be/EfDEM1C7ad8?list%3DPL6WB-A3vU_274McvXu_yel-qa5O-TG0mx][Britannia History]]
+**** [[https://www.youtube.com/watch?v%3DnjwQgz63rIs][The Grand Narrative of the History of Computing]]
+** Music
+   - Pink Floyd
+   - James Taylor
+   - Red House Painters
+** Writing
+*** Working title
+    Nullam *tristique* diam non */turpis/*.  =Curabitur vulputate vestibulum lorem.=
+    ~inlined code~ tristique imperdiet tortor.  Lorem ipsum dolor sit amet,
+    =verbatim text= consectetuer adipiscing elit.  Phasellus purus.  _Aliquam posuere._  Cras
+    +deleted text+ placerat accumsan nulla.  Nam a sapien.  Nam vestibulum accumsan nisl.
+    Aliquam with sub_{script} such as H_{2}0.
+*** Another
+    Etiam vel neque nec dui dignissim bibendum.  Fusce sagittis, libero non
+    molestie mollis, magna orci ultrices dolor, at vulputate neque nulla lacinia
+    eros.  Donec at pede.  Nunc eleifend leo vitae magna.  Donec hendrerit
+    tempor tellus.  Donec at pede.  Donec at pede.  Nullam rutrum.  Nullam
+    tristique diam non turpis.  Sed id ligula quis est convallis tempor.  Nullam
+    tristique diam non turpis.  Nullam tristique diam non turpis.  Donec neque
+    quam, dignissim in, mollis nec, sagittis eu, wisi.  Phasellus neque orci,
+    porta a, aliquet quis, semper a, massa.  Phasellus neque orci, porta a,
+    aliquet quis, semper a, massa.  Etiam laoreet quam sed arcu.  Sed diam.
+    Suspendisse potenti.  Phasellus purus.  Vestibulum convallis, lorem a tempus
+    semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus.
+    Phasellus lacus.  Etiam vel tortor sodales tellus ultricies commodo.  Nullam
+    tristique diam non turpis.  Mauris ac felis vel velit tristique imperdiet.
+    Curabitur lacinia pulvinar nibh.  Nunc rutrum turpis sed pede.  Etiam vel
+    neque nec dui dignissim bibendum.  Aliquam posuere.  Fusce sagittis, libero
+    non molestie mollis, magna orci ultrices dolor, at vulputate neque nulla
+    lacinia eros.  Cras placerat accumsan nulla.
+* Resources
+-  https://github.com/fniessen/refcard-org-mode
+-  [[https://github.com/rayners/emacs.d/blob/master/rayners/org.el]]
+-  [[http://orgmode.org/orgcard.txt][http://orgmode.org/orgcard.txt]]
+-  http://orgmode.org/manual/Setting-tags.html
+-  http://www.deepakg.com/prog/2011/11/emacs-org-mode-todo-list-nirvana/
+-  [[http://doc.norang.ca/org-mode.html]]
