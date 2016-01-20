@@ -1,0 +1,315 @@
+#+TITLE:  Introduction to Org Mode
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2015 Dec 19
+#+TAGS:   emacs presentation org-mode
+
+* Structural Basics
+
+  Time to learn ORG MODE!!
+
+  We'll begin this session by creating an org-mode file with a number
+  of /sections/ and learn how to move and manipulate them.
+
+  Our goal for this is to show how org-mode files are better than
+  Markdown, and just as easy to use.
+
+  #+BEGIN_QUOTE
+        If you are the host or running this as in the presentation mode,
+        advance these instructions with =F12= ...
+  #+END_QUOTE
+
+** Creating Sections
+
+  Create a file called: =sandbox.org=
+
+  Enter a lot of headers and sub-headers
+  - Top-level headers have a single asterisk at start of line
+  - Sub-level headers have more than one asterisk
+
+  #+BEGIN_SRC org
+  * Top Header One
+  ** Sub header A
+  ** Sub header B
+  ** Sub header C
+  * Top Header Two
+  ** Nudder Nested Header
+  #+END_SRC
+
+  Type some words and whatnot under the headers to
+  create /sections/.
+
+** Easier Headers
+
+   Instead of typing the astericks, this is Emacs, and
+   we have key-bindings for easily creating org-mode
+   formatting code.
+
+   - =C-RET= :: to create a header section of the same level
+   - =M-<Right>= :: increases sub-header
+   - =M-<Left>= :: decreases sub-header
+
+   While you /can/ simply add/remove asterisks, the Meta arrow
+   key-binding also increases the indention of the text in that
+   section.
+
+** Moving Between Sections
+
+   While all of the standard Emacs movement keybindings work, try:
+
+   - =C-c n= :: To move to the next section header (or =C-M-n=)
+   - =C-c p= :: To move to the previous section header (=C-M-p=)
+   - =C-c f= :: To move to header at the same level (on
+              top-level? go to the next top-level)
+   - =C-c b= :: To move to previous header at same level
+   - =C-c C-^= ::  To move to the parent header (yeah, odd binding)
+
+   Good features to focus on a section:
+
+   - =C-x n s= :: To narrow to the org-mode section
+   - =C-x n w= :: To widen back to the full text
+
+** Collapsing Sections
+
+   Now that you have the basics of org-mode sections, add some text to
+   one or two sections.
+
+   Move the section header (=C-c C-p=) and hit =TAB=
+
+   Hit it again. Notice that section of text is hidden and then shown.
+
+   Hit: =Shift-TAB= ... Do that multiple times to show and hide all
+   the sections.
+
+   When Org loads a new file all the top-level sections have been
+   collapsed to show the structure.
+
+** Section Summary
+
+   You should now be able to:
+
+   - Create sections and sub-sections by defining headers
+   - Quickly move between the sections
+   - Use various way to focus on a section
+
+
+* Text and Paragraphs
+
+  In this part, we'll play around with regular text entry
+  with the =sandbox-2.org= file, which you can download at:
+
+  http://is.gd/org_sandbox
+
+  Or: git clone https://github.com/howardabrams/pdx-emacs-hackers)
+
+  Or: Type really fast as we show off more features.
+
+   #+BEGIN_QUOTE
+   Note: If you are hosting this demonstration,
+   hit =C-F12= to load the file.
+   #+END_QUOTE
+
+** Paragraphs
+
+   Move to the first section (*Paragraphs*), and type: =C-x n s=
+
+   org-mode works well with [[info:emacs#Visual%20Line%20Mode][Visual Line Mode]], or
+   with [[info:emacs#Fill%20Commands][Fill Commands]].
+
+   Many like to indent the text to align with the
+   header level. Try indenting and filling this text.
+
+   If you have an [[http://www.emacswiki.org/emacs/UnfillParagraph][Unfill Paragraph]] code, try converting
+   it to a single line with =visual-line-mode= on (to
+   create a single line, use: =C-x f 999 RET M-q=.
+
+** Bold, Italics and Whatnot
+
+   Like Wikis and Markdown, org-mode has its formatting
+   abilities. Surround text with the following
+   characters:
+
+   - Bold :: Surrounded with *asterisks*: *
+   - Italics :: Surrounded with /slashes/: /
+   - Underline :: Surrounded with _under-bars_: _
+   - Fixed-width :: Surrounded with =equal signs=: =
+
+   Check out [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#user-content-block-wrappers][insert-pair or wrap-region]] to make this easier.
+   Oh, and the formatting characters can be hidden to make your Emacs
+   look like a word processor.
+
+** Links
+
+   Links make =org-mode= better than Markdown in Emacs.
+
+   Copy or type the following into your file:
+
+   #+BEGIN_SRC org
+   This links to [[http://www.google.com][Google]].
+   #+END_SRC
+
+   Clicking a link opens the default browser.
+
+   Make another link by highlighting some words, and typing: =C-c C-l=
+   Links can refer to files:
+
+   #+BEGIN_SRC org
+   Like your [[file:~/.emacs][[Emacs Configuration]] file.
+   #+END_SRC
+   Or to internal headers in the same file:
+
+   #+BEGIN_SRC org
+   Like this: [[*Links][Links]]
+   #+END_SRC
+
+   Or even to the [[info:org#Hyperlink][internal Emacs documentation]], or (with Tramp)
+   reference files on remote machines.
+
+** Lists
+
+   Widen the section (=C-x n w=), and open the next section, *Some
+   Lists*.
+
+   Lists are like headers, but with initial whitespace. We often use
+   dashes instead of astericks, but they work the same way.
+
+   Make a list or, if using the sandbox file, position point at the
+   end (where it says =sed arcu=).  (You can focus on this section
+   with =C-x n s=)
+
+   * Type =M-RET= to enter a new list element.
+
+   * Type =M-<Up Arrow>= to move that element up the chain.
+
+   * Type =M-<Right Arrow>= to make that element a sub-list.
+
+   Like a header, =TAB= will collapse the subsections of a list.
+
+** Ordered Lists
+
+   In the next section, type a list that starts with a number.
+
+   Type =M-RET= to enter a new item. Notice the same keys work for
+   moving the list around, but the order stays the same.
+
+   Try using the =Shift= key with the left and right arrow keys.
+   Slick, huh?
+
+   The following functions may be useful if bound since =C-<down>=
+   moves to the next list item and not to the end of the list.
+
+   - =org-beginning-of-item-list= :: Jumps to the beginning of your list
+   - =org-end-of-item-list= :: Jumps to the end of your list
+   - =org-list-make-subtree= :: Converts a regular list into headers
+
+** Tables
+
+   A table is just data cells separated by vertical bars.
+   Move to the /dash/ character in the *Tables* section:
+
+   #+BEGIN_SRC org
+     | Bottle | Distillery | Date |
+     |-
+   #+END_SRC
+
+   Hit the tab key, and the rest of the cells will be formatted,
+   and a header row inserted.
+
+   Type information, and you'll notice the =|= character moving
+   screwing up the alignment. No problem, just hit =TAB= again, and
+   all is restored.
+
+   Check out [[info:org#Built-in%20table%20editor][the documentation]] for simple tables.
+
+   Tables are mini-spreadsheets and can automatically calculate
+   columns and other calculations, but we are going to frustrate you
+   by moving on to other features.
+
+** Blocks
+
+   Blocks are ways to organize paragraphs of text, for instance:
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_QUOTE
+         To quote someone or something is divine.
+     ,#+END_QUOTE
+   #+END_SRC
+
+   (Blocks start with =#+= ... not with the comma you see above)
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_EXAMPLE
+         Use to store log files or other data sections.
+     ,#+END_EXAMPLE
+   #+END_SRC
+
+   Especially source code (notice the language mode):
+
+   #+BEGIN_SRC org
+     ,#+BEGIN_SRC ruby
+          [1, 2, 3, 5, 7, 11, 13].each do |prime|
+             puts prime
+          end
+     ,#+END_SRC
+   #+END_SRC
+
+   Type =C-c '= to edit the source code block in a Ruby buffer.
+   (Note: First, execute =M-x load-library= and then =ob-ruby=)
+
+   Type =C-x C-s= to return. Type =C-c C-c= to execute it.
+   We'll have a full workshop on this /literate programming/.
+   See the [[info:org#Working%20with%20source%20code][Info pages]] for details.
+
+* Exporting
+
+  Org mode files can be exported to a variety of formats.
+
+  Type =C-c C-e= and a Helm-like buffer will appear for all the
+  formats you have loaded.
+
+  Don't have enough? =M-x load-libary= the following:
+
+  - =ox-html= :: Exports to HTML including direct loading into browser
+  - =ox-freemind= :: Exports to a mind mapping software format
+  - =ox-reveal= :: Exports as a presentation in a browser
+  - =org-tree-slide= :: Displays org-mode as a Presentation in Emacs
+
+* Summary
+
+  At this point, =org-mode= files should be better to you than normal
+  Markdown files for general notes.
+
+  However, we haven't scratched the surface.
+
+  In the next workshop, we'll kick it up a notch, as we can use this to:
+
+  - Organize ourselves
+  - Literate programming
+  - Exporting to web pages and presentations
+
+** Org Capture
+
+   Org comes with a Lisp macro allowing you to quickly add /sections/
+   to org-mode files without interrupting your current workflow.
+   When you call =org-capture=, you may see something like:
+
+   #+BEGIN_EXAMPLE
+   Select a capture template
+   ==============================
+
+   [n]  Thought or Note
+   [j]  Journal Note
+   [t]  Task Entry
+   [e]  Emacs Trick
+   [c]  Clojure Tip
+   [b]  Blog Entry
+   [j]  Journal Entry
+   -----------------------------
+   [C]  Customize org-capture-templates
+   [q]  Abort
+   #+END_EXAMPLE
+
+   What each entry does is customized with a somewhat
+   [[info:org#Capture%20templates][involved Lisp macro]].
+
+   See [[https://github.com/howardabrams/dot-files/blob/master/emacs-org.org#auto-note-capturing][this example]] for ideas.

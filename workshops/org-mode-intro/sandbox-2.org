@@ -1,0 +1,100 @@
+#+TITLE:  Second Org Sandbox
+#+AUTHOR: (your name)
+#+EMAIL:  (your email)
+#+DATE:   2016 Jan 20
+#+TAGS:   orgmode
+
+* Paragraphs
+
+  To help identify paragraphs and their sub-section, the left-side can
+  be indented with spaces to line up with header. Both =TAB= and =M-q=
+  works as *expected*.
+
+Play around with formatting this paragraph.
+Sed bibendum. Integer placerat tristique nisl. Etiam laoreet quam sed arcu. Vivamus id enim.
+Nunc porta vulputate tellus.
+Fusce commodo.
+Nullam rutrum.  Phasellus at dui in ligula mollis ultricies.  Mauris ac felis vel velit tristique imperdiet.
+
+* Some Lists
+
+  - Nullam tempus
+    - Donec vitae dolor
+  - Donec pretium posuere tellus
+    - Etiam laoreet quam sed arcu
+    - Phasellus at dui in ligula mollis ultricies
+      - Donec pretium posuere tellus
+      - Pretium posuere tellus donec
+    - Donec pretium posuere tellus
+      - Nullam libero mauris, consequat quis, varius et, dictum id, arcu
+      - Nullam tempus
+  - Donec vitae dolor
+    - Etiam laoreet quam sed arcu
+      - Donec pretium posuere tellus
+      - Etiam laoreet quam sed arcu
+      - Phasellus at dui in ligula mollis ultricies
+    - Nullam libero mauris, consequat quis, varius et, dictum id, arcu
+      - Nullam tempus
+      - Nullam tempus
+      - Donec pretium posuere tellus
+  - Etiam laoreet quam sed arcu
+
+** Ordered Lists
+
+   The stuff I need at the store are:
+
+   1. bread
+   2. cheese
+   3. milk
+
+** Dictionary Lists
+
+   These have the entry and its definition separated by two colons:
+
+   - bear :: large, omnivorous animal that likes dancing in tutus
+   - hippo :: large, hairless herbivore that looks better in tutus
+   - ostrich :: flightless bird with bad temperament and nice sunglasses
+
+** Mixed Lists
+
+   My favorite scenes in the *Lord of the Rings* are:
+
+   1. The attack of the Rohirrim
+   2. Eowyn's fight with the witch king
+      + this was already my favorite scene in the book
+      + I really like Miranda Otto.
+   3. Peter Jackson being shot by Legolas
+      - on DVD only
+      - He makes a really funny face when it happens.
+
+* Tables
+
+  Here is a table:
+
+  | Bottle | Distillery | Date |
+  |-
+
+* Blocks
+
+  Here are some blocked structure to play with:
+
+  #+BEGIN_QUOTE
+     To quote someone or something is divine.
+  #+END_QUOTE
+
+  Type TAB on the "BEGIN" line to collapse it.
+
+  #+BEGIN_EXAMPLE
+     To quote someone or something is divine.
+  #+END_EXAMPLE
+
+  Especially source code (notice the language mode):
+
+  #+BEGIN_SRC ruby
+    [1, 2, 3, 5, 7, 11, 13].each do |prime|
+       puts prime
+    end
+  #+END_SRC
+
+  Type C-c and then ' to edit the source code block in a ruby buffer.
+  Type C-x C-s to return.
