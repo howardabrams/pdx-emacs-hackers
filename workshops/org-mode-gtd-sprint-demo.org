@@ -1,0 +1,139 @@
+#+TITLE: Emacs Org-mode GTD sprint demo
+#+DATE: <2016-02-13 Sat>
+#+AUTHOR: William Clifford
+#+EMAIL: wobh@yahoo.com
+#+PROPERTY: Effort_ALL 1 2 3 4 5 8
+#+TODO: TODO DOING WAIT | DONE NOPE
+#+TODO: GOTO HERE | WENT SKIP
+
+
+* Introduction
+
+A simple org file showing a fake sprint.
+
+** Setup
+
+Custom TODO settings I like to have:
+
+For Features and Tasks
+
+- TODO
+- WAIT
+- DOING
+- DONE
+- NOPE
+
+For meetings:
+
+- GOTO
+- HERE
+- WENT
+- SKIP
+
+* Backlog
+** Epic 1
+*** Description
+ So epic.
+*** Story 1
+**** Description
+*** Story 2
+**** Description
+
+* Current sprint
+  :PROPERTIES:
+  :COLUMNS:  %45ITEM %PRI %Effort{+} %TODO %TAGS %CLOCKSUM
+  :END:
+- C-c C-x i :: org-insert-columns-dblock
+
+#+BEGIN: columnview :hlines 1 :id local
+| ITEM              | PRI | Effort | TODO | TAGS   | CLOCKSUM |
+|-------------------+-----+--------+------+--------+----------|
+| * Current sprint  |     |     15 |      |        |     0:02 |
+| ** Meetings [2/2] |     |        |      | :meet: |          |
+| *** Planning      |     |        | WENT |        |          |
+| *** Retro         |     |        | SKIP |        |          |
+| ** Bug 1          |     |        | DONE |        |          |
+| ** Task 1         |     |      2 | DONE |        |          |
+| ** Feature 1      |     |      1 | NOPE |        |     0:02 |
+| ** Task 2         |     |      4 | NOPE |        |          |
+| ** Feature 2      |     |      2 | NOPE |        |          |
+| ** Task 3         |     |      2 | TODO |        |          |
+| ** Task 4         |     |      2 | TODO |        |          |
+| ** Bug 2          |     |      2 | TODO |        |          |
+#+END:
+  
+** Meetings [2/2] 						       :meet:
+*** WENT Planning
+    SCHEDULED: <2016-02-15 Mon 09:00-12:00>
+*** SKIP Retro
+   SCHEDULED: <2016-02-26 Fri 16:00-17:00>
+** DONE Bug 1
+   DEADLINE: <2016-02-16 Tue>
+
+** DONE Task 1
+   DEADLINE: <2016-02-17 Wed>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 1]]
+   :Effort:   2
+   :END:
+
+** NOPE Feature 1
+   DEADLINE: <2016-02-18 Thu>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 1]]
+   :Effort:   1
+   :END:
+   :LOGBOOK:
+   CLOCK: [2016-02-17 Wed 19:56]--[2016-02-17 Wed 19:56] =>  0:00
+   CLOCK: [2016-02-17 Wed 19:52]--[2016-02-17 Wed 19:54] =>  0:02
+   :END:
+** NOPE Task 2
+   DEADLINE: <2016-02-19 Fri>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 1]]
+   :Effort:   4
+   :END:
+
+** NOPE Feature 2
+   DEADLINE: <2016-02-22 Mon>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 2]]
+   :Effort:   2
+   :END:
+
+** TODO Task 3
+   DEADLINE: <2016-02-23 Tue>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 1]]
+   :Effort:   2
+   :END:
+
+** TODO Task 4
+   DEADLINE: <2016-02-24 Wed>
+   :PROPERTIES:
+   :epic:     [[*Epic 1]]
+   :story:    [[*Story 2]]
+   :Effort:   2
+   :END:
+
+** TODO Bug 2
+   DEADLINE: <2016-02-25 Thu>
+   :PROPERTIES:
+   :Effort:   2
+   :END:
+
+* COMMENT org settings
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 24.5.1 (Org mode 8.3.3)
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t
+#+OPTIONS: tags:t tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+STARTUP: hidestars

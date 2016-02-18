@@ -1,0 +1,328 @@
+#+TITLE: 2016-02-17 Org-mode GTD
+#+DATE: <2016-02-07 Sun>
+#+AUTHOR: William Clifford
+#+EMAIL: wobh@yahoo.com
+#+AUTHOR: Lake Denman
+#+EMAIL:
+
+* Introduction
+
+Topic for today is org agenda views, scheduling tasks, archiving and
+refiling, and time tracking.
+
+* Demo Setup
+ 
+** Properties
+
+#+PROPERTY: Effort_ALL 1 2 3 5 8 13
+#+TODO: TODO DOING | DONE
+
+** Keys
+
+We will regularly visit the agenda and timeline throughout this
+workshop. Below are three commands recommended for Org-mode
+setup. The one for =org-agenda= is critical.
+
+#+HEADER: :results value
+#+BEGIN_SRC elisp
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-cb" 'org-iswitchb)
+  (global-set-key "\C-ca" 'org-agenda)
+#+END_SRC
+
+#+RESULTS:
+: org-agenda
+
+** Commands
+
+- C-c [ :: add current file to agenda files list
+- C-c ] :: remove current file from agenda files list
+
+** Steps
+
+1. =emacs -q org-mode-datetimes.org=
+2. ~C-c [~ 
+
+* A few words about Properties and Columns
+
+We have to mention properties because almost everything about setting
+and using datetimes intersects with the Org-mode feature of "Properties".
+
+Properties provide a way for org to keep track of "metadata" about the
+entries in the outline. They're simple key-value pairs that may appear
+under the headline in a special properties block like so:
+
+** Example headline with property drawer			    :example:
+   :PROPERTIES:
+   :example-property-key: example value
+   :another-property-key: another value
+   :END:
+
+In this example we see two properties of this headline. They were set
+with the =org-set-property= (~C-c C-x p~) command. The ~:PROPERTIES:~
+and ~:END:~ delimiters around them mark the beginning and ending of a
+"drawer" which allow you to hide or reveal them ~TAB~ as you would
+other headlines, but they are automatically expanded with the
+headline.
+
+Related topics to explore another time include:
+
+- Customized and other drawer types (although we'll see one specialty
+  drawer, ~:LOGBOOK:~)
+- You can display them in Org column view (we'll be introduced to
+  agenda view later this session)
+- Properties inheritance by child headlines,
+- Searching Properties
+- Properies can be setup with auto-complete and cycling values
+
+We're not going to talk about this much more, except to say that /all/
+the metadata about an Org-mode headline is considered a property. The
+features you know already, TODO state, tags, priority, are properties
+with special syntax. There's other special syntax properties and we're
+going to discuss them right away.
+
+** Column view quick intro
+
+Quick intro here, circle back regularly.
+
+- C-c C-x C-c :: Column view
+  - q :: exit column view
+  - g :: refresh column view
+- C-l :: recenter-top-bottom, *very* handy for bringing a headline in
+     column view up to the headers.
+
+** [0/4] columns task list					    :example:
+   :PROPERTIES:
+   :COLUMNS:  %40ITEM %17Effort{+} %PRIORITY %TODO %CLOCKSUM
+   :END:
+
+*** TODO [#A] task 1
+    :PROPERTIES:
+    :Effort:   2
+    :END:
+
+*** TODO [#B] task 2
+    :PROPERTIES:
+    :Effort:   3
+    :END:
+
+*** TODO [#C] task 3
+    :PROPERTIES:
+    :Effort:   5
+    :END:
+
+*** TODO task 4
+    :PROPERTIES:
+    :Effort:   8
+    :END:
+
+* Timestamps
+
+** Datetime Formats
+
+There's two kinds of timestamp
+
+- <2016-02-17 Wed> :: an "active" timestamp ~C-c .~
+- [2016-02-17 Wed] :: an "inactive" timestamp ~C-c !~
+
+Active timestamps are included in the Agenda. To include a time in the
+timestamp use the argument ~C-u C-c .~ or ~C-u C-c !~
+
+- <2016-02-17 Wed 18:45>
+- [2016-02-17 Wed 18:30]
+
+* Deadlines and Schedules
+
+- C-c C-d :: insert deadline
+- C-c C-s :: insert schedule
+- C-c C-t :: increment TODO state
+
+examples below:
+
+** DONE meet with Will to work on PDX-Emacs presentation	    :example:
+   SCHEDULED: <2016-02-13 Sat 20:30>
+
+** DONE write date time and agenda presentations		    :example:
+   DEADLINE: <2016-02-16 Tue>
+
+** Biweekly unrequired thing					    :example:
+   SCHEDULED: <2016-02-26 Fri +2w>
+
+** PDX-Emacs meetup as diary floating date			    :example:
+   <%%(diary-float t 3 3)> 18:30 
+
+** TODO Monthly Scheduled Todo Thingy				    :example:
+   SCHEDULED: <2016-04-13 Wed ++1m>
+   :PROPERTIES:
+   :END:
+   - State "DONE"       from "TODO"       [2016-02-13 Sat 22:40]
+   - State "DONE"       from "TODO"       [2016-02-13 Sat 22:35]
+   :PROPERTIES:
+   :LAST_REPEAT: [2016-02-13 Sat 22:40]
+   :END:
+
+#+BEGIN_QUOTE
+Marking this DONE will shift the date by at least one week,
+but also by as many weeks as it takes to get this date into
+the future.  However, it stays on a Sunday, even if you called
+and marked it done on Saturday.
+#+END_QUOTE
+
+** TODO repeated entry every some odd days			    :example:
+   SCHEDULED: <2017-04-03 Mon +2d>
+   :PROPERTIES:
+   :LAST_REPEAT: [2016-02-17 Wed 19:13]
+   :END:
+   - State "DONE"       from "TODO"       [2016-02-17 Wed 19:13]
+#+BEGIN_QUOTE
+Marking this DONE will shift the date to one month after
+today.
+#+END_QUOTE
+
+** Valentines Day						    :example:
+   SCHEDULED: <2016-02-14 Sun ++y>
+
+* Time Clock
+
+Time clocks are useful for tracking time spent on tasks.
+
+- C-c C-x C-i :: Clock into a task
+- C-c C-x C-o :: Clock out of a task
+- C-c C-x C-j :: Move point to current running clock
+- C-c C-x C-q :: Cancel the current clock. This is useful if a
+                 clock was started by mistake, or if you ended up
+                 working on something else.
+- C-c C-x C-j :: Jump to the headline of the currently clocked in
+                 task.  With a ~C-u~ prefix arg, select the target
+                 task from a list of recently clocked tasks.
+- C-c C-x C-d :: Display time summaries for each subtree in the
+                 current buffer. Press ~C-c C-c~ or start typing to
+                 remove.
+
+- C-c C-c :: Recalculate the resulting time 
+- C-c C-t :: Changing the TODO state of an item to DONE
+             automatically stops the clock if it is running in this
+             same item.
+
+** Writing Time Clock 						    :example:
+   CLOCK: [2016-02-15 Mon 22:18]--[2016-02-16 Tue 22:30] => 24:12
+
+** TODO Todo item						    :example:
+   :LOGBOOK:
+   CLOCK: [2016-02-17 Wed 19:19]--[2016-02-17 Wed 19:19] =>  0:00
+   CLOCK: [2016-02-17 Wed 19:17]--[2016-02-17 Wed 19:19] =>  0:02
+   CLOCK: [2016-02-15 Mon 22:48]--[2016-02-15 Mon 22:50] =>  0:02
+   :END:
+
+** Clocking in multiple times 					    :example:
+   CLOCK: [2016-02-15 Mon 22:35]--[2016-02-15 Mon 22:38] =>  0:03
+   CLOCK: [2016-02-15 Mon 22:30]--[2016-02-15 Mon 22:35] =>  0:05
+   CLOCK: [2016-02-15 Mon 22:20]--[2016-02-15 Mon 22:25] =>  0:05
+
+** Clock table 							    :example:
+   CLOCK: [2016-02-15 Mon 22:35]--[2016-02-15 Mon 22:38] =>  0:03
+   CLOCK: [2016-02-15 Mon 22:30]--[2016-02-15 Mon 22:35] =>  0:05
+   CLOCK: [2016-02-15 Mon 20:20]--[2016-02-15 Mon 22:25] =>  2:05
+#+BEGIN: clocktable :maxlevel 2 :scope subtree
+#+CAPTION: Clock summary at [2016-02-17 Wed 19:24]
+| Headline                | Time   |      |
+|-------------------------+--------+------|
+| *Total time*            | *2:13* |      |
+|-------------------------+--------+------|
+| \_  Example clock table |        | 2:13 |
+#+END:
+
+- C-c C-x C-r :: insert clock table (careful not to run twice) 
+- C-c C-x C-u :: update clock table 
+
+* Effort estimates
+
+- C-c C-x e :: set effort property
+
+** File settings for efforts
+
+In lengths of time:
+
+: #+PROPERTY: Effort_ALL 1:00 2:00 3:00 5:00 8:00 13:00
+
+In agile points, Fibonacci distribution:
+
+: #+PROPERTY: Effort_ALL 1 2 3 5 8 13
+
+** Project							    :example:
+  :PROPERTIES:
+  :Effort:   3
+  :COLUMNS:  %40ITEM(Task) %17Effort(Estimated Effort){+} %CLOCKSUM
+  :END:
+  :LOGBOOK:
+  CLOCK: [2016-02-17 Wed 15:26]--[2016-02-17 Wed 19:26] =>  4:00
+  :END:
+
+*** Subproject							    :example:
+    :PROPERTIES:
+    :Effort:   3
+    :END:
+    :LOGBOOK:
+    CLOCK: [2016-02-17 Wed 13:30]--[2016-02-17 Wed 16:30] =>  3:00
+    CLOCK: [2016-02-16 Tue 16:30]--[2016-02-16 Tue 18:30] =>  2:00
+    :END:
+
+* Agenda and timeline views
+  
+- C-ca :: agenda menu
+  - a :: agenda for week or day
+    - f :: forward
+    - b :: backward
+    - d :: day view
+    - w :: week view
+    - y :: year view
+    - L :: go to location and recenter
+    - C-c C-x b :: go to location in indirect buffer
+  - L :: timeline
+    - l :: log mode toggle - shows clocks for day
+
+* Archive/Refile
+
+- C-c C-w :: refile entry or region to another headline or file
+
+** Awesome stuff I'm going to do				    :example:
+*** TODO stuff
+*** DONE things
+
+** Awesome stuff I did						    :example:
+
+* Putting it all together: sprint plan
+
+- [[file:org-mode-gtd-sprint-demo.org]]
+
+* References
+** Properties
+- [[info:org#Properties and columns]]
+- [[info:org#Property syntax]]
+- [[info:org#Special%20properties][info:org#Special properties]]
+- [[info:org#Column%20view][info:org#Column view]]
+** Timestamps
+- [[info:org#Timestamps]]
+** Schedules and Deadlines
+
+
+- [[info:org#Inserting deadline/schedule]]
+
+
+asdlfhasdlkfjlkjasldkjfasdlkfjlkjf
+
+sdfgskjdfg;lkdj
+
+** Agenda
+-
+
+* COMMENT org settings
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 24.5.1 (Org mode 8.3.3)
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t
+#+OPTIONS: tags:t tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+STARTUP: hidestars
