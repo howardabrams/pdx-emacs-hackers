@@ -1,0 +1,1289 @@
+#+TITLE:  Introduction to Literate Programming
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2016 Feb 17
+#+TAGS:   org-mode emacs presentation
+#+STARTUP: inlineimages yes
+#+PROPERTY: tangle no
+#+PROPERTY: eval no-export
+#+PROPERTY: results silent
+#+PROPERTY: exports code
+
+First of all, I would like to apologize for the examples.
+I need code and scripts in various languages that are short, simple to
+understand, not distracting, and useful.
+
+I sometimes can get one of those features. I would love better ones.
+
+* Requirements
+
+  Welcome to a *Literate Programming Workshop*.
+
+  You will need:
+  - *Emacs*, =v23= or better (I really suggest =v24.4= or better)
+    Type: ~C-h v~ and ~emacs-version~
+
+  - *org-mode*, =v8.2.10=
+    Type: ~C-h v~ and ~org-version~
+    Install: ~M-x package-refresh-contents~
+             ~M-x package-install~ and ~org~
+
+  - *Python* and *Ruby* (or be good at quickly translating
+     into your favorite language)
+
+  Please /pair/ with a partner...
+
+  First, a bit of background while you are downloading...
+
+* Background
+** Why Literate Programming
+
+  - Literate Programming first invented by Donald Knuth in 1980’s
+
+  - Emphasize communication to people / team
+
+               “Let us change our traditional attitude to the
+                construction of programs. Instead of imagining that
+                our main task is to instruct a computer what to do,
+                let us concentrate rather on explaining to human
+                beings what we want a computer to do.”  —[[http://www.brainyquote.com/quotes/authors/d/donald_knuth.html#0RwBBIoWjqiKPb2Y.99][Donald Knuth]]
+
+  - Inverted style from /code/ peppered with /comments/
+
+  - Never took off and an industry changer
+
+  - Used (to various degrees) in niche circles
+
+** What is Literate Programming
+
+  * Programs are written for human understanding
+     * Order based on logic of the problem
+     * Not constrained to deficiencies in the programming language
+  * Comments are first-class citizens
+  * Create a document for people *and* source code
+
+    [[file:literate-programming-tangling.png]]
+
+** Literate Programming Example
+
+   First, define a block of code with a /name/:
+
+   #+BEGIN_EXAMPLE
+   Every first program begins with baby steps,
+   like the ubiquitous "hello world" example:
+
+   <<The most common programming example.>>=
+   echo 'Hello, World!';
+   @
+   #+END_EXAMPLE
+
+   Other blocks can /insert/ earlier blocks by name:
+
+   #+BEGIN_EXAMPLE
+   <<A simple PHP loop>>=
+   <?php
+   for ($i = 0; $i < 5; $i++) {
+    <<The most common programming example.>>
+   }>
+   @
+   #+END_EXAMPLE
+
+** Why Org?
+
+   Knuth's /literate programming/ was "text without support".
+
+   We already use =org-mode= for everything else, right?
+
+   If you buy into literate programming, org-mode is fookin' brilliant.
+
+                            “In the third millennium, does it still make sense
+                             to work with text files? Text files are the only truly
+                             portable format for files. The data will never get
+                             lost.”  —[[http://transcriptvids.com/v/oJTwQvgfgMM.html][Carsten Dominik]]
+
+** Advantages
+
+   - Better documentation for your source code
+
+   - Great for team communication over issues and problems
+
+   - Clarify your own thoughts for complicated situations
+
+   - Note-oriented REPL for investigating new libraries
+
+   - Inter-language facility
+
+   - Org's /organizational/ features, like Agendas
+
+** Different End Results
+
+   Knuth thought goal was /source code/ and /exported documentation/.
+
+     - How important is /noweb/ features with modern languages?
+     - Are you sole owner or is your team all Emacs users?
+
+   He wanted to get around language limitations.
+
+   Other goals or purposes:
+
+   - *Exporting?* For communication with team mates about issues.
+   - *Code Evaluation?* What I call /literate devops/ or /thoughtful repl/.
+
+* Basics
+** Syntax Formatting
+
+   Each *code block* has a typical syntax (format):
+
+   #+BEGIN_EXAMPLE
+      #+NAME: <name>
+      #+BEGIN_SRC <language> <switches> <header arguments>
+        <body>
+      #+END_SRC
+   #+END_EXAMPLE
+
+   The =language= is required, but the rest are optional.
+   (Other than =BEGIN_SRC= and =END_SRC=)
+
+** Basic Example
+
+   - Open an org-mode file
+   - Format it any way you wish
+   - Create a source code block (case doesn't matter):
+     #+BEGIN_EXAMPLE
+       #+BEGIN_SRC emacs-lisp
+          (directory-files ".")
+       #+END_SRC
+     #+END_EXAMPLE
+   - Type =C-c C-c= to execute the command and see the results
+   - Type =C-c ’= (apostrophe) to edit the block in your /mode/.
+
+** Shortcuts
+
+   If you are using a newer version of Emacs (not v22) or a later
+   version of org-mode (installed from ELPA), use [[info:org#Easy%20Templates][Org Templates]]:
+
+   - Create a block quickly by typing: =<s= and hit =TAB=
+   - If not, try [[https://github.com/capitaomorte/yasnippet][yasnippets]]
+   - You can hit =C-c C-c= anywhere from =BEGIN= to =END=
+   - Jump to next block with =C-c M-f= and back =C-c M-b=
+
+** Good Configuration
+
+   To syntax highlight your code, set the following:
+
+   #+BEGIN_SRC elisp
+     (setq org-confirm-babel-evaluate nil
+           org-src-fontify-natively t
+           org-src-tab-acts-natively t)
+   #+END_SRC
+
+   The last variable removes the annoying "Do you want to execute"
+   your code when you type: ~C-c C-c~
+
+* Language Support
+
+  Many programming languages [[info:org#Languages][are supported]], but not all.
+
+  Some /quasi-languages/ are being developed:
+  - HTML
+  - SQL
+  - Rest Service calls
+
+** Shell Example
+
+  #+BEGIN_EXAMPLE
+  #+BEGIN_SRC sh
+    ls -1
+  #+END_SRC
+  #+END_EXAMPLE
+
+  If =C-c C-c= doesn't work, you may have to pre-load the
+  support:  =M-x load-library=  and then =ob-sh=
+
+** Ruby Example
+
+  You can /load yer language/ beforehand (add to =.emacs=):
+  #+BEGIN_SRC elisp
+    (require 'ob-ruby)
+  #+END_SRC
+
+  Then, you can =C-c C-c= this:
+  #+BEGIN_EXAMPLE
+  #+BEGIN_SRC ruby
+    Dir.entries('.')
+  #+END_SRC
+  #+END_EXAMPLE
+
+** All Favorite Languages
+
+   Add something like following to your =.emacs= file:
+
+   #+BEGIN_SRC emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((sh         . t)
+        (js         . t)
+        (emacs-lisp . t)
+        (perl       . t)
+        (scala      . t)
+        (clojure    . t)
+        (python     . t)
+        (ruby       . t)
+        (dot        . t)
+        (css        . t)
+        (plantuml   . t)))
+   #+END_SRC
+
+** Caveats
+
+   Every language behaves /slightly/ different...
+
+   Ruby and Lisps behave similarly. Python, not so much.
+   This Ruby code /just works/:
+
+   #+BEGIN_EXAMPLE
+     #+BEGIN_SRC ruby
+       5 * 3
+     #+END_SRC
+   #+END_EXAMPLE
+
+   Python requires explicit =return= statements:
+
+   #+BEGIN_EXAMPLE
+     #+BEGIN_SRC python
+       return 5 * 3
+     #+END_SRC
+   #+END_EXAMPLE
+
+   Shell is very /output oriented/ (no /values/).
+
+* Block Settings
+
+  Most of the interesting stuff happens by setting various
+  /block parameters/ (also called /header parameters/).
+
+  We will dive into the various ways they can be defined.
+  Then we will discuss most of the parameters after.
+
+** Example: dir
+
+   Code block can take header parameters, like [[info:org#dir][dir]]:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC sh :dir /etc
+     ls
+   #+END_SRC
+   #+END_EXAMPLE
+
+   Type =C-c C-c= to execute this.
+
+   The =:dir= parameter specifies where the code block executes.
+
+   Code blocks can have zero or more header parameters.
+
+** Example: Remote Execution
+
+   Use Tramp in combination with =:dir= to have code block remotely
+   executed:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC sh
+     hostname -f
+   #+END_SRC
+
+   #+RESULTS:
+   : blobfish
+
+   #+BEGIN_SRC sh :dir /howardabrams.com:
+     hostname -f
+   #+END_SRC
+
+   #+RESULTS:
+   : goblin
+   #+END_EXAMPLE
+
+** Parameter Setting Locations
+
+   Parameters can be set in different locations.
+   From /most specific/ to /most general/:
+
+   - *Inline with Header Block*
+
+   - *Above Header Block*
+
+   - *Defaults for Blocks in a Section*
+
+   - *Defaults for Blocks in entire Document*
+
+   - *Defaults for Every Document*
+     Setting either /list/ variable:
+     - =org-babel-default-header-args=
+     - =org-babel-default-header-args:<lang>=
+
+   *Note:* You can set parameters when a /block is called/.
+         We'll talk about this later.
+
+** Too Many Parameters?
+
+   Inline parameters with Header Block, fine with few parms:
+     #+BEGIN_EXAMPLE
+     #+BEGIN_SRC sh :dir /etc
+       grep $USER passwd
+     #+END_SRC
+     #+END_EXAMPLE
+
+   Lots of parameters? Move some (or /all/) parameters above:
+     #+BEGIN_EXAMPLE
+     #+HEADER: :dir /etc
+     #+BEGIN_SRC sh
+       grep $USER passwd
+     #+END_SRC
+     #+END_EXAMPLE
+
+   These two section behave the same.
+
+   Both =#+HEADER:= and =#+HEADERS:= behave the same.
+   You can have more than one =#+HEADER:= line.
+
+** Section Default Parameters
+
+   Place header values for /all source blocks/ for a section in a
+   *property drawer*:
+
+   - Create a header section in your org file
+   - Type: ~C-c C-x p~
+   - For =Property= enter: ~dir~
+   - For =Value= enter: ~/etc~
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby
+     File.absolute_path(".")
+   #+END_SRC
+
+   #+RESULTS:
+   : /etc
+   #+END_EXAMPLE
+
+   Jump to the =:PROPERTIES:= drawer, and hit ~TAB~ to see the contents.
+
+** Language-Specific Default Values
+   :PROPERTIES:
+   :header-args:sh: :dir /etc
+   :header-args:ruby: :dir /
+   :END:
+
+   You can specify [[info:org#Language-specific%20header%20arguments%20in%20Org%20mode%20properties][language-specific header arguments]]:
+   - Type: ~C-c C-x p~
+   - For =Property= enter: ~header-args:sh~
+   - For =Value= enter: ~:dir /etc
+   - Type: ~C-c C-x p~
+   - For =Property= enter: ~header-args:ruby~
+   - For =Value= enter: ~:dir /~
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC sh
+     ls -d $(pwd)
+   #+END_SRC
+
+   #+RESULTS:
+   : /etc
+
+   #+BEGIN_SRC ruby
+     File.absolute_path('.')
+   #+END_SRC
+
+   #+RESULTS:
+   : /
+   #+END_EXAMPLE
+
+   *Note:* Some parameters can only be set with =header-args=
+
+** Default Parameters for Document
+
+   To set a parameter for all blocks in a document, use the
+   =#+PROPERTY:= setting:
+
+   #+BEGIN_EXAMPLE
+   #+PROPERTY:    dir ~/Work
+   #+END_EXAMPLE
+
+   Notice these parameters do not have initial colon.
+
+   Language specific ones, however, do:
+
+   #+BEGIN_EXAMPLE
+   #+PROPERTY:    header-args:sh  :tangle no
+   #+END_EXAMPLE
+
+   *Note:* They /aren't registered/ until you hit ~C-c C-c~ on them.
+
+   #+BEGIN_EXAMPLE
+   #+DESCRIPTION: A literate programming version of my Emacs Initialization script that is specific to this machine.
+   #+PROPERTY:    results silent
+   #+PROPERTY:    tangle ~/.emacs.d/elisp/init-local.el
+   #+PROPERTY:    eval no-export
+   #+PROPERTY:    comments org
+   #+OPTIONS:     num:nil toc:nil todo:nil tasks:nil tags:nil
+   #+OPTIONS:     skip:nil author:nil email:nil creator:nil timestamp:nil
+   #+INFOJS_OPT:  view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+   #+END_EXAMPLE
+
+* Header Parameter Types
+
+  Discussion of parameters revolve on usage:
+
+  - Evaluation Parameters
+  - Export Parameters
+  - Literate Programming Parameters
+  - Variable Parameters
+  - Miscellaneous Input/Output
+
+* Evaluation Parameters
+** Results
+
+   When you execute a block, what do you want out of it?
+   - results of the expression?
+   - outputted results?
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby
+       puts 'Hello World'
+       5 * 6
+   #+END_SRC
+
+   #+RESULTS:
+   : 30
+   #+END_EXAMPLE
+
+   Change the [[info:org#Results%20of%20evaluation][:results]] header argument:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby :results output
+       puts 'Hello World'
+       5 * 6
+   #+END_SRC
+
+   #+RESULTS:
+   : Hello World
+   #+END_EXAMPLE
+
+   *Note:* Default for =sh= is =output=.
+
+** Output Formatting
+
+   Results of code evaluation are re-inserted into your document.
+
+    - =table=    :: Row for single array, full table for array of arrays
+    - =list=     :: Regular org-mode list exported as an un-ordered list
+    - =verbatim= :: Raw output
+    - =file=     :: Writes the results to a file
+    - =html=     :: Assumes the output is HTML code, and that is what is exported
+    - =code=     :: Assumes output is source code in the same language
+    - =silent=   :: Only shown in the mini-buffer
+
+   Results can be exported (as in HTML, Email).
+
+   Results can be used as /input variables/ to other code blocks.
+
+*** Lists
+
+   Notice the previous output created a table. Let's make a list:
+
+   #+BEGIN_EXAMPLE
+     #+BEGIN_SRC ruby :results list
+       Dir.entries('.').sort.select do |file|
+          file[0] != '.'
+       end
+     #+END_SRC
+
+     #+RESULTS:
+     - for-the-host.el
+     - instructions.org
+     - literate-programming-tangling.png
+     - literate-programming-tangling2.png
+   #+END_EXAMPLE
+
+   The Ruby code above is just an example. Use your favorite language
+   to pull out a list of files from a directory.
+
+*** Raw Output
+
+    Shell commands and log output are candidates.
+
+    #+BEGIN_EXAMPLE
+      #+BEGIN_SRC sh :results verbatim :exports both
+        ssh -v goblin.howardabrams.com ls mossandcrow
+      #+END_SRC
+
+      #+RESULTS:
+      OpenSSH_6.6.1, OpenSSL 1.0.1f 6 Jan 2014
+      debug1: Reading configuration data /etc/ssh/ssh_config
+      debug1: /etc/ssh/ssh_config line 19: Applying options for *
+      debug1: Connecting to goblin.howardabrams.com [162.243.135.186] port 22.
+      debug1: Connection established.
+      debug1: identity file /home/howard/.ssh/id_rsa type 1
+      debug1: identity file /home/howard/.ssh/id_rsa-cert type -1
+      debug1: identity file /home/howard/.ssh/id_dsa type -1
+      debug1: identity file /home/howard/.ssh/id_dsa-cert type -1
+      debug1: identity file /home/howard/.ssh/id_ecdsa type -1
+      debug1: identity file /home/howard/.ssh/id_ecdsa-cert type -1
+      debug1: identity file /home/howard/.ssh/id_ed25519 type -1
+      debug1: identity file /home/howard/.ssh/id_ed25519-cert type -1
+      debug1: Enabling compatibility mode for protocol 2.0
+      debug1: Local version string SSH-2.0-OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.4
+      debug1: Remote protocol version 2.0, remote software version OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.6
+      debug1: match: OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.6 pat OpenSSH_6.6.1* compat 0x04000000
+      debug1: SSH2_MSG_KEXINIT sent
+      debug1: SSH2_MSG_KEXINIT received
+      debug1: kex: server->client aes128-ctr hmac-md5-etm@openssh.com none
+      debug1: kex: client->server aes128-ctr hmac-md5-etm@openssh.com none
+      debug1: sending SSH2_MSG_KEX_ECDH_INIT
+      debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+      debug1: Server host key: ECDSA 33:a5:af:64:c4:0a:84:6a:a8:57:5a:5f:69:13:08:85
+      debug1: Host 'goblin.howardabrams.com' is known and matches the ECDSA host key.
+      debug1: Found key in /home/howard/.ssh/known_hosts:2
+      debug1: ssh_ecdsa_verify: signature correct
+      debug1: SSH2_MSG_NEWKEYS sent
+      debug1: expecting SSH2_MSG_NEWKEYS
+      debug1: SSH2_MSG_NEWKEYS received
+      debug1: SSH2_MSG_SERVICE_REQUEST sent
+      debug1: SSH2_MSG_SERVICE_ACCEPT received
+      debug1: Authentications that can continue: publickey,password
+      debug1: Next authentication method: publickey
+      debug1: Offering RSA public key: /home/howard/.ssh/id_rsa
+      debug1: Server accepts key: pkalg ssh-rsa blen 279
+      debug1: key_parse_private2: missing begin marker
+      debug1: read PEM private key done: type RSA
+      debug1: Authentication succeeded (publickey).
+      Authenticated to goblin.howardabrams.com ([162.243.135.186]:22).
+      debug1: channel 0: new [client-session]
+      debug1: Requesting no-more-sessions@openssh.com
+      debug1: Entering interactive session.
+      debug1: Sending environment.
+      debug1: Sending env LANG = en_US.UTF-8
+      debug1: Sending command: ls mossandcrow
+      debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+      debug1: client_input_channel_req: channel 0 rtype eow@openssh.com reply 0
+      about.html
+      contact.html
+      examples.html
+      img
+      index.html
+      scripts
+      styles
+      debug1: channel 0: free: client-session, nchannels 1
+      debug1: fd 0 clearing O_NONBLOCK
+      debug1: fd 1 clearing O_NONBLOCK
+      Transferred: sent 3388, received 2616 bytes, in 0.6 seconds
+      Bytes per second: sent 5588.8, received 4315.3
+      debug1: Exit status 0
+    #+END_EXAMPLE
+** Session
+
+   Each block re-starts its interpreter.
+   Use the [[info:org#session][:session]] header parameter as a label.
+
+   Why? Issues include:
+
+   - Large start-up time with large REP Ls ... like Clojure
+   - Large start-up time on remote machines using Tramp
+   - Maintaining functions and other state between blocks
+
+   *Note:* Values can be passed between code blocks.
+
+*** Restarting Example
+
+    To prove that interpreters are restarted with each block:
+
+    #+BEGIN_EXAMPLE
+    #+BEGIN_SRC python
+      avar = 42
+      return avar
+    #+END_SRC
+
+    #+RESULTS:
+    : 42
+
+    #+BEGIN_SRC python
+      return avar / 2
+    #+END_SRC
+
+    #+RESULTS:
+    NameError: global name 'avar' is not defined
+    #+END_EXAMPLE
+
+*** Passing Consistency
+
+    To prove that =:session=-based interpreters are /not/ restarted with
+    each block:
+
+    #+BEGIN_EXAMPLE
+    #+BEGIN_SRC ruby :session foobar
+      avar = 42
+    #+END_SRC
+
+    #+RESULTS:
+    : 42
+
+    #+BEGIN_SRC ruby :session foobar
+      avar / 2
+    #+END_SRC
+
+    #+RESULTS:
+    : 21
+    #+END_EXAMPLE
+
+    *Note:* The =:session= is good to set as a section property.
+
+    Switch to the =*foobar*= buffer to interact with the interpreter.
+
+    *Warning:* A named session can be shared across languages.
+
+*** Warning about Shared Sessions
+
+    What's wrong with the following?
+
+    #+BEGIN_EXAMPLE
+     **** Confusing Stuff
+     :PROPERTIES:
+     :session:  stateful
+     :END:
+
+     #+BEGIN_SRC sh :results silent
+       NUM_USERS=$(grep 'bash' /etc/passwd | wc -l --)
+     #+END_SRC
+
+     We have access to them:
+     #+BEGIN_SRC sh
+       echo $NUM_USERS
+     #+END_SRC
+
+     #+RESULTS:
+     : 2
+
+     This doesn't return... why?
+     #+BEGIN_SRC ruby
+       21 * 2
+     #+END_SRC
+    #+END_EXAMPLE
+
+     *Warning:* A =:session= setting for a section is shared for each
+              block... /regardless of language!/
+
+** Writing Results to a File
+
+   Create and evaluate this block:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby :results output :file primes.txt
+     require 'prime'
+     Prime.each(5000) do |prime|
+       p prime
+     end
+   #+END_SRC
+   #+END_EXAMPLE
+
+   Click on the link to load the file in a buffer.
+
+   *Note:* The =:file= parameter needs =:results output=
+         As it doesn't know how to format internal values
+
+* Exporting
+
+  Hit ~C-c C-e h o~ to display your file in a browser.
+
+  The [[info:org#exports][:exports]] header argument specifies what to export:
+  - =code= for just the block
+  - =results= for just the results to evaluating block
+  - =both= for both code and results
+  - =none= to ignore the block
+
+  *Note:* The =:exports= is good to set as a section property.
+
+** Syntax Highlighting for HTML
+
+   To get syntax highlight for HTML exports, simply
+   include the [[https://www.emacswiki.org/emacs/Htmlize][htmlize]] library:
+
+   #+BEGIN_SRC elisp
+     (require 'htmlize)
+   #+END_SRC
+
+   Should come with recent versions of org-mode.
+   Doesn't load? Install it from ELPA.
+
+* Literate Programming
+
+** Tangling
+
+   Takes all blocks of the same language, and writes into source file.
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby :tangle double-space.rb
+     while s = gets
+       print s ; puts
+     end
+   #+END_SRC
+   #+END_EXAMPLE
+
+   Type: ~C-c C-v t~ to render [[file:double-space.rb][double-space.rb]]
+
+   With =:tangle yes= ... writes to file with same name as org file.
+
+   Use =PROPERTY= to specify values for the /entire file/:
+
+   #+BEGIN_EXAMPLE
+      #+PROPERTY:    tangle ~/.emacs.d/elisp/bling-mode.el
+   #+END_EXAMPLE
+
+** Comments
+
+   If sharing source with others, have org prose turned into [[info:org#comments][comments]]:
+
+   #+BEGIN_EXAMPLE
+   Precede each line in the text from standard in (or file) with the
+   current line number.
+   See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+
+   #+BEGIN_SRC ruby
+     while s = gets
+       puts "#{$<.file.lineno}: #{s}"
+     end
+   #+END_SRC
+
+   #+PROPERTY: tangle lineno.rb
+   #+PROPERTY: comments org
+   #+END_EXAMPLE
+
+   Gets turned into this Ruby script:
+
+   #+BEGIN_EXAMPLE
+   # Precede each line in the text from standard in (or file) with the
+   # current line number.
+   # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+
+   while s = gets
+     puts "#{$<.file.lineno}: #{s}"
+   end
+   #+END_EXAMPLE
+
+** Shebang
+
+   When creating scripts, we often need to give it the initial
+   interpreter to use. Here is specify the [[info:org#shebang][:shebang]] parameter (either
+   as a block header or a document property):
+
+   #+BEGIN_EXAMPLE
+   Precede each line in the text from standard in (or file) with the
+   current line number.
+   See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+
+   #+BEGIN_SRC ruby :shebang "#!/bin/ruby"
+     while s = gets
+       puts "#{$<.file.lineno}: #{s}"
+     end
+   #+END_SRC
+
+   #+PROPERTY: shebang #!/bin/ruby
+   #+PROPERTY: tangle lineno
+   #+PROPERTY: comments org
+   #+END_EXAMPLE
+
+   Works as expected:
+
+   #+BEGIN_EXAMPLE
+   #!/bin/ruby
+   # Precede each line in the text from standard in (or file) with the
+   # current line number.
+   # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+
+   while s = gets
+     puts "#{$<.file.lineno}: #{s}"
+   end
+   #+END_EXAMPLE
+
+** Noweb
+
+   If you /name/ a block, you can /include/ that block *inside* another
+   block... as text, using [[info:org#noweb][:noweb]].  Consider this org-mode file:
+
+   #+BEGIN_EXAMPLE
+   Print the last field of each line.
+
+   #+NAME: the-script
+   #+BEGIN_SRC ruby
+     puts $F.last
+   #+END_SRC
+
+   #+BEGIN_SRC sh :noweb yes :tangle last-col.sh
+     ruby -ane '<<the-script>>'
+   #+END_SRC
+   #+END_EXAMPLE
+
+   Creates [[file:last-col.sh][last-col.sh]] that contains:
+
+   #+BEGIN_EXAMPLE
+   ruby -ane 'puts $F.last'
+   #+END_EXAMPLE
+
+** Usefulness?
+
+   How useful is this?
+
+   Older languages that Donald Knuth used, required all variables and
+   functions to be defined before used. This meant, you always wrote
+   code, /bottom-up/.
+
+   Some code may be better explained from a /top-down/ approach.
+   The /web and tangling/ approach could work well for some algorithms.
+
+   Modern languages often don't have such limitations.
+
+** TODO Noweb Considerations
+
+   What about multi-line blocks?
+
+   #+NAME: prime
+   #+BEGIN_SRC ruby
+     require "prime"
+     Prime.prime?(ARG[0])
+   #+END_SRC
+
+   #+BEGIN_SRC ruby :noweb yes :tangle primes.sh
+     cat $* | xargs ruby -ne '<<prime>>'
+   #+END_SRC
+
+   Treats the /preceding text/ like /initial comment characters/:
+
+   #+BEGIN_SRC sh
+     cat $* | xargs ruby -ne 'require "prime"
+     cat $* | xargs ruby -ne 'Prime.prime?(ARG[0])'
+   #+END_SRC
+
+   This recent change requires [[http://ss64.com/bash/syntax-here.html][here docs]] or single quotes:
+
+   #+BEGIN_SRC sh :noweb yes :tangle primes2.sh
+     cat $* | xargs ruby -ne '
+     <<prime>>'
+   #+END_SRC
+
+* Variables
+
+  Org can pass in one or move values /into your source block/ as a variable.
+
+** Variable Example
+
+   Build this block and execute it with ~C-c C-c~:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC python :var interest=13
+     return 313 * (interest / 100.0)
+   #+END_SRC
+
+   #+RESULTS:
+   : 40.69
+   #+END_EXAMPLE
+
+   Pythonic precision for the win.
+
+** Setting Variables
+
+   Specify multiple values all over the place:
+
+   #+BEGIN_EXAMPLE
+   #+HEADER: :var a=42 d=56 :var f=23
+   #+HEADERS: :var b=79 e=79
+   #+BEGIN_SRC ruby :var c=3 g=2
+     [ a, b, c, d, e, f, g ]
+   #+END_SRC
+
+   #+RESULTS:
+   | 42 | 79 | 3 | 56 | 79 | 23 | 2 |
+   #+END_EXAMPLE
+
+   But how useful is this?
+
+** Block-to-Block Value Passing
+
+   First, name your block:
+   #+BEGIN_EXAMPLE
+   #+NAME: twelve-primes
+   #+BEGIN_SRC ruby
+     require 'prime'
+     Prime.first 12
+   #+END_SRC
+
+   #+RESULTS: twelve-primes
+   | 2 | 3 | 5 | 7 | 11 | 13 | 17 | 19 | 23 | 29 | 31 | 37 |
+   #+END_EXAMPLE
+
+   Pass them into another code block as an /array/ variable:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC python :var primes=twelve-primes
+     return primes[-1]
+   #+END_SRC
+
+   #+RESULTS:
+   : 37
+   #+END_EXAMPLE
+
+   First time Ruby and Python has worked together.
+
+** Tabular Variable Data
+
+   Need to create a table of numbers to use in following sections:
+
+   #+BEGIN_EXAMPLE
+   #+NAME: cool-numbers
+   #+BEGIN_SRC emacs-lisp
+     (mapcar (lambda (i)
+               (list i          (random 10)
+                     (expt i 2) (random 100)
+                     (expt i 3) (random 1000)))
+             (number-sequence 1 10))
+   #+END_SRC
+
+   #+RESULTS: cool-numbers
+   |  1 | 1 |   1 | 14 |    1 |  74 |
+   |  2 | 7 |   4 | 25 |    8 | 823 |
+   |  3 | 2 |   9 | 68 |   27 | 402 |
+   |  4 | 4 |  16 | 17 |   64 | 229 |
+   |  5 | 6 |  25 |  4 |  125 | 208 |
+   |  6 | 7 |  36 | 67 |  216 | 203 |
+   |  7 | 0 |  49 | 96 |  343 | 445 |
+   |  8 | 0 |  64 | 58 |  512 | 908 |
+   |  9 | 2 |  81 | 15 |  729 | 465 |
+   | 10 | 0 | 100 | 61 | 1000 | 798 |
+   #+END_EXAMPLE
+
+   While you can make a table of number any way you wish (in whatever
+   language tickles your fancy). Here's a Pythonista version:
+   #+BEGIN_SRC python
+     import random
+     return [[i,      random.randint(1, 10),
+              i ** 2, random.randint(1, 100),
+              i ** 3, random.randint(1, 1000)] for i in range(1, 10)]
+   #+END_SRC
+
+   One for the Rubyists:
+   #+BEGIN_SRC ruby
+     (1..10).collect do |i|
+       [ i, rand(10), i ** 2, rand(100), i ** 3, rand(1000) ]
+     end
+   #+END_SRC
+
+   And a token gesture for the Clojurians:
+   #+BEGIN_SRC clojure
+     (map #(list    %      (rand-int 10)
+                 (* % %)   (rand-int 100)
+                 (* % % %) (rand-int 1000))
+          (range 1 10))
+   #+END_SRC
+
+** List of Lists
+
+   Grabbing our table gives our block an array of arrays:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC python :var nums=cool-numbers :results list
+     return [ cell + 1 for row in nums for cell in row ]
+   #+END_SRC
+
+   #+RESULTS:
+   - 2
+   - 4
+   - 2
+   - 23
+   - 2
+   - 955
+   - 3
+   - 7
+   - 5
+   - 43
+   - 9
+   ...
+   #+END_EXAMPLE
+
+   Here it takes the two dimensional matrix, puts it into one long
+   list, and adds one to every number.
+
+** Slicing and Dicing Tables
+
+   We can get just a single row from a table:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC ruby :var fifth=cool-numbers[4]
+     fifth
+   #+END_SRC
+
+   #+RESULTS:
+   | 5 | 9 | 25 | 93 | 125 | 524 |
+   #+END_EXAMPLE
+
+   We can also get just a single column:
+
+   #+BEGIN_EXAMPLE
+   #+NAME: cubes
+   #+BEGIN_SRC elisp :var cubes=cool-numbers[,4]
+     cubes
+   #+END_SRC
+
+   #+RESULTS: cubes
+   | 1 | 8 | 27 | 64 | 125 | 216 | 343 | 512 | 729 | 1000 |
+   #+END_EXAMPLE
+
+** Reprocessing
+
+   The =cool-numbers= was used in the =cubes= block, and we can use that
+   again:
+
+   #+BEGIN_EXAMPLE
+   #+NAME: roots_of_list
+   #+BEGIN_SRC python :var lst=cubes :results list
+     import math
+     return [ math.sqrt(n) for n in lst ]
+   #+END_SRC
+
+   #+RESULTS: roots_of_list
+   - 1.0
+   - 2.8284271247461903
+   - 5.196152422706632
+   - 8.0
+   - 11.180339887498949
+   - 14.696938456699069
+   - 18.520259177452136
+   - 22.627416997969522
+   - 27.0
+   - 31.622776601683793
+   #+END_EXAMPLE
+
+* Keeping your Blocks Clean
+
+  A block of code /does/ something
+       but
+  A block of code also /communicates/ something
+
+  Try to keep necessary code that doesn't help communicate out.
+
+** Environment Setup
+
+   Connection information to OpenStack set in resource files:
+
+   #+BEGIN_EXAMPLE
+     $ source openrc
+     $ nova list
+   #+END_EXAMPLE
+
+   Put necessary but unsightly code in [[info:org#prologue][:prologue]] sections:
+
+   #+BEGIN_EXAMPLE
+   #+HEADER: :prologue "source openrc"
+   #+BEGIN_SRC sh
+     nova list
+   #+END_SRC
+   #+END_EXAMPLE
+
+   Code in the =:prologue= will not be exported.
+
+** Using RVM
+
+   Languages like Python and Ruby often want a /virtual machine/ to
+   specify how something should be processed. You can use =:prologue=
+   with two backslashes to pre-pend it (for shell calls anyway):
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC sh :prologue "~/.rvm/bin/rvm 1.9.3@msw exec \\"
+     gem list
+   #+END_SRC
+   #+END_EXAMPLE
+
+   *Note:* Execution of Ruby or Python code is based on the [[http://www.emacswiki.org/emacs/RvmEl][rvm]], or
+   [[http://github.com/jorgenschaefer/pyvenv][pyvenv]] or [[https://github.com/jorgenschaefer/elpy/wiki][ELPY]].
+
+* Miscellaneous Features
+** Calling Blocks
+
+   Remember our =roots_of_list= block we [[*Reprocessing][created above]]?
+   It took a variable, =lst=.
+
+   #+BEGIN_EXAMPLE
+   #+CALL: roots_of_list( lst='(16 144 81 61) )
+
+   #+Results:
+   | 4.0 | 12.0 | 9.0 | 7.810249675906654 |
+   #+END_EXAMPLE
+
+   Do it again, but with our =cool-numbers= table:
+   #+BEGIN_EXAMPLE
+   #+CALL: roots_of_list( lst=cool-numbers[,2] )
+
+   #+RESULTS:
+   | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
+   #+END_EXAMPLE
+
+   We can /push/ values into blocks or a block can /pull/ values.
+
+   *Note:* You can set header parameters /inside brackets/.
+         See [[info:org#Evaluating%20code%20blocks][info:org#Evaluating code blocks]] for details.
+
+** Cleaning Results
+
+   Clean the output from code block using [[info:org#post][:post]] parameter.
+
+   The =ls -l= prepends a =total= line, we create a /processor/ to return
+   all lines except the first. Notice, my variable, =data=:
+
+   #+BEGIN_EXAMPLE
+   #+NAME: skip_first
+   #+BEGIN_SRC elisp :var data=""
+     (cdr data)
+   #+END_SRC
+   #+END_EXAMPLE
+
+   The /results/ from the code block is assigned to =*this*= which I
+   assign to the =data= variable:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC sh :post skip_first(data=*this*)
+     ls -l
+   #+END_SRC
+   #+END_EXAMPLE
+
+** Library of Babel
+
+   The /Library of Babel/ is one or more files containing one or more
+   /named blocks/ that are accessible to any org-mode file.
+
+   - Create and save file of named blocks
+   - Once in your Emacs session: ~C-c C-v i~
+   - Select your /babel/ file.
+   - Or, call: =org-babel-lob-ingest= with each file
+
+   These are really good:
+   - for =:post= processing output
+   - for =#+CALL= where you want just the results
+
+** One Liners
+
+   If you want a quickly evaluated result from a language:
+
+     - src_ruby{ 5+6 } =11=
+     - src_elisp{ org-agenda-files }
+     - src_sh{ ls }
+
+   When exported, only /results/ are shown (not the source).
+
+   Also supports /calling/ blocks too:
+   #+BEGIN_EXAMPLE
+   call_roots_of_list( lst=cool-numbers[,2] )
+   | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
+   #+END_EXAMPLE
+
+* Specialized Languages
+** Graphviz
+
+   If you have [[http://www.graphviz.org/][Graphviz]] installed:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC dot :file graphics.png
+     digraph {
+       a -> b;
+       b -> c:
+       d -> a;
+     }
+   #+END_SRC
+   #+END_EXAMPLE
+
+   [[file:graphics.png]]
+
+** PlantUML
+
+   If you have [[http://plantuml.sourceforge.net/download.html][PlantUML]] installed:
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC plantuml :file sequence-diagram.png
+     @startuml sequence-diagram.png
+
+       Alice -> Bob: synchronous call
+       Alice ->> Bob: asynchronous call
+
+     @enduml
+   #+END_SRC
+   #+END_EXAMPLE
+
+   [[file:sequence-diagram.png]]
+
+** Calc
+
+   Access the [[info:calc#Top][Emacs Calculator]] as well.
+   You may need to load it: ~M-x load-library~ and type: ~ob-calc~
+
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC calc :var a=2 b=9 c=64 x=5
+     ((a+b)^3 + sqrt(c)) / (2x+1)
+   #+END_SRC
+
+   #+RESULTS:
+   : 121.727272727
+   #+END_EXAMPLE
+
+   Or simplify the formula:
+   #+BEGIN_EXAMPLE
+   #+BEGIN_SRC calc :var a=4 b=2
+     ((a+b)^3 + sqrt(c)) / (2x+1)
+   #+END_SRC
+
+   #+RESULTS:
+   : (sqrt(c) + 216) / (2 x + 1)
+   #+END_EXAMPLE
+
+* Summary
+
+  Each source code block allows [[info:org#Specific%20header%20arguments][header arguments]]. What is your goal?
+
+  - *Code Evaluation?*
+    - [[info:org#dir][dir]]      :: specify directory the code should run ... Tramp?
+    - [[info:org#session][session]]  :: re-use interpreter between code blocks
+    - [[info:org#file][file]]     :: write results to the file system
+    - [[info:org#eval][eval]]     :: limit evaluation of specific code blocks
+    - [[info:org#cache][cache]]    :: cache eval results to avoid re-evaluation of blocks
+    - [[info:org#var][var]]      :: setting variables for a block (ignore with no-expand)
+
+  - *Exporting?*
+    - [[info:org#results][results]]  :: either =output= or =value= and the formatting
+    - [[info:org#exports][exports]]  :: how the code and results should be exported
+
+  - *Literate Programming?*
+    - [[info:org#tangle][tangle]]   :: how the source written to a script file ... this is
+                  literate programming.
+    - [[info:org#mkdirp][mkdirp]]   :: create parent directory of tangled source file
+    - [[info:org#shebang][shebang]]  :: the initial line written to tangled files
+    - [[info:org#noweb][noweb]]    :: toggle expansion of noweb references
+    - [[info:org#noweb-ref][noweb-ref]] :: resolution target for noweb references
+
+  - Special Input?
+    - [[info:org#prologue][prologue]] :: text to prepend to code block body
+    - [[info:org#epilogue][epilogue]] :: text to append to code block body
+
+  - Special Output and Formatting?
+    - [[info:org#padline][padline]]  ::
+    - [[info:org#post][post]]     :: post processing of code block results
+    - [[info:org#wrap][wrap]]     ::
+    - Misc.    :: [[info:org#hlines][hlines]], [[info:org#colnames][colnames]], [[info:org#rownames][rownames]]
+
+** Ignore This
+
+   #+BEGIN_SRC ruby
+     def fibonacci(n)
+        n <= 1 ? n :  fibonacci( n - 1 ) + fibonacci( n - 2 )
+     end
+
+     def factorial(n)
+       (1..n).inject(1, :*)
+     end
+
+     (1..10).collect do |i|
+       [ i, i*i, i**3, factorial(i), fibonacci(i) ]
+     end
+   #+END_SRC
