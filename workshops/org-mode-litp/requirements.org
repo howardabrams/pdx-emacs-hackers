@@ -1,0 +1,15 @@
+* Requirements
+
+  You will need:
+  - *Emacs*, =v23= or better (I really suggest =v24.4= or better)
+    Type:  ~C-h v~ and ~emacs-version~
+
+  - *org-mode*, =v8.2.10=
+    Type:  ~C-h v~ and ~org-version~
+    Install: ~M-x package-refresh-contents~
+               ~M-x package-install~ and ~org~
+
+  - *Python* and *Ruby* for programming examples
+    (or be good at translating into your favorite language)
+
+  *Note:* Please /pair/ with a partner...

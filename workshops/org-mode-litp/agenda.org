@@ -1,0 +1,23 @@
+
+  Hey! You made it to our new venue.
+
+  - Wifi :: =foobar=
+  - Pass :: =bartwo=
+
+* Agenda
+
+
+  - Business Items
+    - Need a new venue
+    - Agenda for next month
+
+  - Introductions
+    - Primary use of Emacs
+    - Use Emacs at your Day Job?
+    - Your most novel, original, unique or strange hobby
+
+  - Part 3 on org-mode Workshop: *Literate Programming*
+
+  - Lightning Demonstrations
+
+  - Office Hours

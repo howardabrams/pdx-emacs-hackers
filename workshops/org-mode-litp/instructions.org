@@ -6,7 +6,7 @@
 #+STARTUP: inlineimages yes
 #+PROPERTY: tangle no
 #+PROPERTY: eval no-export
-#+PROPERTY: results silent
+#+PROPERTY: results replace
 #+PROPERTY: exports code
 
 First of all, I would like to apologize for the examples.
@@ -15,32 +15,15 @@ understand, not distracting, and useful.
 
 I sometimes can get one of those features. I would love better ones.
 
-* Requirements
-
-  Welcome to a *Literate Programming Workshop*.
-
-  You will need:
-  - *Emacs*, =v23= or better (I really suggest =v24.4= or better)
-    Type: ~C-h v~ and ~emacs-version~
-
-  - *org-mode*, =v8.2.10=
-    Type: ~C-h v~ and ~org-version~
-    Install: ~M-x package-refresh-contents~
-             ~M-x package-install~ and ~org~
-
-  - *Python* and *Ruby* (or be good at quickly translating
-     into your favorite language)
-
-  Please /pair/ with a partner...
-
-  First, a bit of background while you are downloading...
-
 * Background
+
+  Before we dive into the org-mode specifics...
+
 ** Why Literate Programming
 
   - Literate Programming first invented by Donald Knuth in 1980’s
 
-  - Emphasize communication to people / team
+  - Emphasize /communication/ to people / team
 
                “Let us change our traditional attitude to the
                 construction of programs. Instead of imagining that
@@ -50,47 +33,51 @@ I sometimes can get one of those features. I would love better ones.
 
   - Inverted style from /code/ peppered with /comments/
 
-  - Never took off and an industry changer
+  - Never took off as an industry changer
 
   - Used (to various degrees) in niche circles
 
 ** What is Literate Programming
 
   * Programs are written for human understanding
-     * Order based on logic of the problem
+     * Order based on logic of the problem (top-down)
      * Not constrained to deficiencies in the programming language
+
   * Comments are first-class citizens
+
   * Create a document for people *and* source code
 
-    [[file:literate-programming-tangling.png]]
+    [[file:tangling-dark.png]]
 
 ** Literate Programming Example
 
    First, define a block of code with a /name/:
 
-   #+BEGIN_EXAMPLE
-   Every first program begins with baby steps,
-   like the ubiquitous "hello world" example:
+       #+BEGIN_EXAMPLE
+       Every first program begins with baby steps,
+       like the ubiquitous "hello world" example:
 
-   <<The most common programming example.>>=
-   echo 'Hello, World!';
-   @
-   #+END_EXAMPLE
+       <<The most common programming example.>>=
+       echo 'Hello, World!';
+       @
+       #+END_EXAMPLE
 
    Other blocks can /insert/ earlier blocks by name:
 
-   #+BEGIN_EXAMPLE
-   <<A simple PHP loop>>=
-   <?php
-   for ($i = 0; $i < 5; $i++) {
-    <<The most common programming example.>>
-   }>
-   @
-   #+END_EXAMPLE
+       #+BEGIN_EXAMPLE
+       <<A simple PHP loop>>=
+       <?php
+       for ($i = 0; $i < 5; $i++) {
+        <<The most common programming example.>>
+       }>
+       @
+       #+END_EXAMPLE
 
 ** Why Org?
 
-   Knuth's /literate programming/ was "text without support".
+   Knuth's /literate programming/ was /text with minimal support/ (=noweb=).
+
+   One approach is [[http://ipython.org/notebook.html][iPython's notebook]], but we like /readable/ text files.
 
    We already use =org-mode= for everything else, right?
 
@@ -115,31 +102,28 @@ I sometimes can get one of those features. I would love better ones.
 
    - Org's /organizational/ features, like Agendas
 
-** Different End Results
+** Warnings
 
-   Knuth thought goal was /source code/ and /exported documentation/.
+   - Programmers work in teams ... does everyone use Emacs?
 
-     - How important is /noweb/ features with modern languages?
-     - Are you sole owner or is your team all Emacs users?
+   - Every programming language is treated /slightly/ differently
 
-   He wanted to get around language limitations.
-
-   Other goals or purposes:
-
-   - *Exporting?* For communication with team mates about issues.
-   - *Code Evaluation?* What I call /literate devops/ or /thoughtful repl/.
+   - Knuth wanted to get around language limitations.
+     Are we still limited?
 
 * Basics
+
+  Fire up Emacs and let's try out the basics of working with source
+  code in org-mode.
+
 ** Syntax Formatting
 
    Each *code block* has a typical syntax (format):
 
-   #+BEGIN_EXAMPLE
-      #+NAME: <name>
-      #+BEGIN_SRC <language> <switches> <header arguments>
-        <body>
-      #+END_SRC
-   #+END_EXAMPLE
+       #+NAME: <name>
+       #+BEGIN_SRC <language> <switches> <header arguments>
+         <body>
+       #+END_SRC
 
    The =language= is required, but the rest are optional.
    (Other than =BEGIN_SRC= and =END_SRC=)
@@ -149,11 +133,11 @@ I sometimes can get one of those features. I would love better ones.
    - Open an org-mode file
    - Format it any way you wish
    - Create a source code block (case doesn't matter):
-     #+BEGIN_EXAMPLE
+
        #+BEGIN_SRC emacs-lisp
           (directory-files ".")
        #+END_SRC
-     #+END_EXAMPLE
+
    - Type =C-c C-c= to execute the command and see the results
    - Type =C-c ’= (apostrophe) to edit the block in your /mode/.
 
@@ -171,13 +155,11 @@ I sometimes can get one of those features. I would love better ones.
 
    To syntax highlight your code, set the following:
 
-   #+BEGIN_SRC elisp
      (setq org-confirm-babel-evaluate nil
            org-src-fontify-natively t
            org-src-tab-acts-natively t)
-   #+END_SRC
 
-   The last variable removes the annoying "Do you want to execute"
+   The first variable removes the annoying "Do you want to execute"
    your code when you type: ~C-c C-c~
 
 * Language Support
@@ -191,34 +173,35 @@ I sometimes can get one of those features. I would love better ones.
 
 ** Shell Example
 
-  #+BEGIN_EXAMPLE
-  #+BEGIN_SRC sh
-    ls -1
-  #+END_SRC
-  #+END_EXAMPLE
+   Type this block:
 
-  If =C-c C-c= doesn't work, you may have to pre-load the
-  support:  =M-x load-library=  and then =ob-sh=
+       #+BEGIN_SRC sh
+        ls -1
+       #+END_SRC
+
+   Run ~C-c C-c~ to execute it and get a listing of files.
+
+   If ~C-c C-c~ doesn't work, you may have to pre-load the
+   support:  ~M-x load-library~  and then ~ob-sh~
 
 ** Ruby Example
 
-  You can /load yer language/ beforehand (add to =.emacs=):
-  #+BEGIN_SRC elisp
-    (require 'ob-ruby)
-  #+END_SRC
+  You can /load yer language/ beforehand (add to =.emacs=), or
+  type ~M-S-;~ and enter:
 
-  Then, you can =C-c C-c= this:
-  #+BEGIN_EXAMPLE
-  #+BEGIN_SRC ruby
-    Dir.entries('.')
-  #+END_SRC
-  #+END_EXAMPLE
+      (require 'ob-ruby)
+
+  Then, enter this block and =C-c C-c= this:
+
+      #+BEGIN_SRC ruby
+        Dir.entries('.')
+      #+END_SRC
+
 
 ** All Favorite Languages
 
    Add something like following to your =.emacs= file:
 
-   #+BEGIN_SRC emacs-lisp
      (org-babel-do-load-languages
       'org-babel-load-languages
       '((sh         . t)
@@ -232,7 +215,6 @@ I sometimes can get one of those features. I would love better ones.
         (dot        . t)
         (css        . t)
         (plantuml   . t)))
-   #+END_SRC
 
 ** Caveats
 
@@ -241,19 +223,15 @@ I sometimes can get one of those features. I would love better ones.
    Ruby and Lisps behave similarly. Python, not so much.
    This Ruby code /just works/:
 
-   #+BEGIN_EXAMPLE
-     #+BEGIN_SRC ruby
-       5 * 3
-     #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC ruby
+         5 * 3
+       #+END_SRC
 
    Python requires explicit =return= statements:
 
-   #+BEGIN_EXAMPLE
-     #+BEGIN_SRC python
-       return 5 * 3
-     #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC python
+         return 5 * 3
+       #+END_SRC
 
    Shell is very /output oriented/ (no /values/).
 
@@ -269,11 +247,9 @@ I sometimes can get one of those features. I would love better ones.
 
    Code block can take header parameters, like [[info:org#dir][dir]]:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC sh :dir /etc
-     ls
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC sh :dir /etc
+         ls
+       #+END_SRC
 
    Type =C-c C-c= to execute this.
 
@@ -286,21 +262,25 @@ I sometimes can get one of those features. I would love better ones.
    Use Tramp in combination with =:dir= to have code block remotely
    executed:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC sh
-     hostname -f
-   #+END_SRC
+       #+BEGIN_SRC sh
+         hostname -f
+       #+END_SRC
 
-   #+RESULTS:
-   : blobfish
+       #+RESULTS:
+       : blobfish
 
-   #+BEGIN_SRC sh :dir /howardabrams.com:
-     hostname -f
-   #+END_SRC
+       #+BEGIN_SRC sh :dir /howardabrams.com:
+         hostname -f
+       #+END_SRC
 
-   #+RESULTS:
-   : goblin
-   #+END_EXAMPLE
+       #+RESULTS:
+       : goblin
+
+   Why yes, the following does work:
+
+       #+BEGIN_SRC ruby :dir /howardabrams.com:
+         Dir.entries(".")
+       #+END_SRC
 
 ** Parameter Setting Locations
 
@@ -326,19 +306,17 @@ I sometimes can get one of those features. I would love better ones.
 ** Too Many Parameters?
 
    Inline parameters with Header Block, fine with few parms:
-     #+BEGIN_EXAMPLE
-     #+BEGIN_SRC sh :dir /etc
-       grep $USER passwd
-     #+END_SRC
-     #+END_EXAMPLE
+
+       #+BEGIN_SRC sh :dir /etc
+         grep $USER passwd
+       #+END_SRC
 
    Lots of parameters? Move some (or /all/) parameters above:
-     #+BEGIN_EXAMPLE
-     #+HEADER: :dir /etc
-     #+BEGIN_SRC sh
-       grep $USER passwd
-     #+END_SRC
-     #+END_EXAMPLE
+
+       #+HEADER: :dir /etc
+       #+BEGIN_SRC sh
+         grep $USER passwd
+       #+END_SRC
 
    These two section behave the same.
 
@@ -355,14 +333,12 @@ I sometimes can get one of those features. I would love better ones.
    - For =Property= enter: ~dir~
    - For =Value= enter: ~/etc~
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby
-     File.absolute_path(".")
-   #+END_SRC
+       #+BEGIN_SRC ruby
+         File.absolute_path(".")
+       #+END_SRC
 
-   #+RESULTS:
-   : /etc
-   #+END_EXAMPLE
+       #+RESULTS:
+       : /etc
 
    Jump to the =:PROPERTIES:= drawer, and hit ~TAB~ to see the contents.
 
@@ -380,21 +356,19 @@ I sometimes can get one of those features. I would love better ones.
    - For =Property= enter: ~header-args:ruby~
    - For =Value= enter: ~:dir /~
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC sh
-     ls -d $(pwd)
-   #+END_SRC
+       #+BEGIN_SRC sh
+         ls -d $(pwd)
+       #+END_SRC
 
-   #+RESULTS:
-   : /etc
+       #+RESULTS:
+       : /etc
 
-   #+BEGIN_SRC ruby
-     File.absolute_path('.')
-   #+END_SRC
+       #+BEGIN_SRC ruby
+         File.absolute_path('.')
+       #+END_SRC
 
-   #+RESULTS:
-   : /
-   #+END_EXAMPLE
+       #+RESULTS:
+       : /
 
    *Note:* Some parameters can only be set with =header-args=
 
@@ -445,27 +419,23 @@ I sometimes can get one of those features. I would love better ones.
    - results of the expression?
    - outputted results?
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby
-       puts 'Hello World'
-       5 * 6
-   #+END_SRC
+       #+BEGIN_SRC ruby
+         puts 'Hello World'
+         5 * 6
+       #+END_SRC
 
-   #+RESULTS:
-   : 30
-   #+END_EXAMPLE
+       #+RESULTS:
+       : 30
 
    Change the [[info:org#Results%20of%20evaluation][:results]] header argument:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby :results output
-       puts 'Hello World'
-       5 * 6
-   #+END_SRC
+       #+BEGIN_SRC ruby :results output
+         puts 'Hello World'
+         5 * 6
+       #+END_SRC
 
-   #+RESULTS:
-   : Hello World
-   #+END_EXAMPLE
+       #+RESULTS:
+       : Hello World
 
    *Note:* Default for =sh= is =output=.
 
@@ -487,21 +457,19 @@ I sometimes can get one of those features. I would love better ones.
 
 *** Lists
 
-   Notice the previous output created a table. Let's make a list:
+    Notice the previous output created a table. Let's make a list:
 
-   #+BEGIN_EXAMPLE
-     #+BEGIN_SRC ruby :results list
-       Dir.entries('.').sort.select do |file|
-          file[0] != '.'
-       end
-     #+END_SRC
+        #+BEGIN_SRC ruby :results list
+          Dir.entries('.').sort.select do |file|
+             file[0] != '.'
+          end
+        #+END_SRC
 
-     #+RESULTS:
-     - for-the-host.el
-     - instructions.org
-     - literate-programming-tangling.png
-     - literate-programming-tangling2.png
-   #+END_EXAMPLE
+        #+RESULTS:
+        - for-the-host.el
+        - instructions.org
+        - literate-programming-tangling.png
+        - literate-programming-tangling2.png
 
    The Ruby code above is just an example. Use your favorite language
    to pull out a list of files from a directory.
@@ -510,7 +478,6 @@ I sometimes can get one of those features. I would love better ones.
 
     Shell commands and log output are candidates.
 
-    #+BEGIN_EXAMPLE
       #+BEGIN_SRC sh :results verbatim :exports both
         ssh -v goblin.howardabrams.com ls mossandcrow
       #+END_SRC
@@ -577,7 +544,7 @@ I sometimes can get one of those features. I would love better ones.
       Transferred: sent 3388, received 2616 bytes, in 0.6 seconds
       Bytes per second: sent 5588.8, received 4315.3
       debug1: Exit status 0
-    #+END_EXAMPLE
+
 ** Session
 
    Each block re-starts its interpreter.
@@ -595,43 +562,39 @@ I sometimes can get one of those features. I would love better ones.
 
     To prove that interpreters are restarted with each block:
 
-    #+BEGIN_EXAMPLE
-    #+BEGIN_SRC python
-      avar = 42
-      return avar
-    #+END_SRC
+        #+BEGIN_SRC python
+          answer = 42
+          return answer
+        #+END_SRC
 
-    #+RESULTS:
-    : 42
+        #+RESULTS:
+        : 42
 
-    #+BEGIN_SRC python
-      return avar / 2
-    #+END_SRC
+        #+BEGIN_SRC python
+          return answer / 2
+        #+END_SRC
 
-    #+RESULTS:
-    NameError: global name 'avar' is not defined
-    #+END_EXAMPLE
+        #+RESULTS:
+        NameError: global name 'avar' is not defined
 
 *** Passing Consistency
 
     To prove that =:session=-based interpreters are /not/ restarted with
     each block:
 
-    #+BEGIN_EXAMPLE
-    #+BEGIN_SRC ruby :session foobar
-      avar = 42
-    #+END_SRC
+        #+BEGIN_SRC ruby :session foobar
+          avar = 42
+        #+END_SRC
 
-    #+RESULTS:
-    : 42
+        #+RESULTS:
+        : 42
 
-    #+BEGIN_SRC ruby :session foobar
-      avar / 2
-    #+END_SRC
+        #+BEGIN_SRC ruby :session foobar
+          avar / 2
+        #+END_SRC
 
-    #+RESULTS:
-    : 21
-    #+END_EXAMPLE
+        #+RESULTS:
+        : 21
 
     *Note:* The =:session= is good to set as a section property.
 
@@ -643,29 +606,26 @@ I sometimes can get one of those features. I would love better ones.
 
     What's wrong with the following?
 
-    #+BEGIN_EXAMPLE
-     **** Confusing Stuff
-     :PROPERTIES:
-     :session:  stateful
-     :END:
+        **** Confusing Stuff
+        :PROPERTIES:
+        :session:  stateful
+        :END:
 
-     #+BEGIN_SRC sh :results silent
-       NUM_USERS=$(grep 'bash' /etc/passwd | wc -l --)
-     #+END_SRC
+        #+BEGIN_SRC sh :results silent
+          NUM_USERS=$(grep 'bash' /etc/passwd | wc -l --)
+        #+END_SRC
 
-     We have access to them:
-     #+BEGIN_SRC sh
-       echo $NUM_USERS
-     #+END_SRC
+        We have access to them:
+        #+BEGIN_SRC sh
+          echo $NUM_USERS
+        #+END_SRC
 
-     #+RESULTS:
-     : 2
+        #+RESULTS:
+        : 2
 
-     This doesn't return... why?
-     #+BEGIN_SRC ruby
-       21 * 2
-     #+END_SRC
-    #+END_EXAMPLE
+        #+BEGIN_SRC ruby
+          21 * 2
+        #+END_SRC
 
      *Warning:* A =:session= setting for a section is shared for each
               block... /regardless of language!/
@@ -674,14 +634,12 @@ I sometimes can get one of those features. I would love better ones.
 
    Create and evaluate this block:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby :results output :file primes.txt
-     require 'prime'
-     Prime.each(5000) do |prime|
-       p prime
-     end
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC ruby :results output :file primes.txt
+         require 'prime'
+         Prime.each(5000) do |prime|
+           p prime
+         end
+       #+END_SRC
 
    Click on the link to load the file in a buffer.
 
@@ -705,9 +663,7 @@ I sometimes can get one of those features. I would love better ones.
    To get syntax highlight for HTML exports, simply
    include the [[https://www.emacswiki.org/emacs/Htmlize][htmlize]] library:
 
-   #+BEGIN_SRC elisp
      (require 'htmlize)
-   #+END_SRC
 
    Should come with recent versions of org-mode.
    Doesn't load? Install it from ELPA.
@@ -718,13 +674,11 @@ I sometimes can get one of those features. I would love better ones.
 
    Takes all blocks of the same language, and writes into source file.
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby :tangle double-space.rb
-     while s = gets
-       print s ; puts
-     end
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC ruby :tangle double-space.rb
+         while s = gets
+           print s ; puts
+         end
+       #+END_SRC
 
    Type: ~C-c C-v t~ to render [[file:double-space.rb][double-space.rb]]
 
@@ -740,32 +694,32 @@ I sometimes can get one of those features. I would love better ones.
 
    If sharing source with others, have org prose turned into [[info:org#comments][comments]]:
 
-   #+BEGIN_EXAMPLE
-   Precede each line in the text from standard in (or file) with the
-   current line number.
-   See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+       #+BEGIN_EXAMPLE
+       Precede each line in the text from standard in (or file) with the
+       current line number.
+       See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
 
-   #+BEGIN_SRC ruby
-     while s = gets
-       puts "#{$<.file.lineno}: #{s}"
-     end
-   #+END_SRC
+       #+BEGIN_SRC ruby
+         while s = gets
+           puts "#{$<.file.lineno}: #{s}"
+         end
+       #+END_SRC
 
-   #+PROPERTY: tangle lineno.rb
-   #+PROPERTY: comments org
-   #+END_EXAMPLE
+       #+PROPERTY: tangle lineno.rb
+       #+PROPERTY: comments org
+       #+END_EXAMPLE
 
    Gets turned into this Ruby script:
 
-   #+BEGIN_EXAMPLE
-   # Precede each line in the text from standard in (or file) with the
-   # current line number.
-   # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+       #+BEGIN_EXAMPLE
+       # Precede each line in the text from standard in (or file) with the
+       # current line number.
+       # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
 
-   while s = gets
-     puts "#{$<.file.lineno}: #{s}"
-   end
-   #+END_EXAMPLE
+       while s = gets
+         puts "#{$<.file.lineno}: #{s}"
+       end
+       #+END_EXAMPLE
 
 ** Shebang
 
@@ -773,58 +727,56 @@ I sometimes can get one of those features. I would love better ones.
    interpreter to use. Here is specify the [[info:org#shebang][:shebang]] parameter (either
    as a block header or a document property):
 
-   #+BEGIN_EXAMPLE
-   Precede each line in the text from standard in (or file) with the
-   current line number.
-   See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+       #+BEGIN_EXAMPLE
+       Precede each line in the text from standard in (or file) with the
+       current line number.
+       See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
 
-   #+BEGIN_SRC ruby :shebang "#!/bin/ruby"
-     while s = gets
-       puts "#{$<.file.lineno}: #{s}"
-     end
-   #+END_SRC
+       #+BEGIN_SRC ruby :shebang "#!/bin/ruby"
+         while s = gets
+           puts "#{$<.file.lineno}: #{s}"
+         end
+       #+END_SRC
 
-   #+PROPERTY: shebang #!/bin/ruby
-   #+PROPERTY: tangle lineno
-   #+PROPERTY: comments org
-   #+END_EXAMPLE
+       #+PROPERTY: shebang #!/bin/ruby
+       #+PROPERTY: tangle lineno
+       #+PROPERTY: comments org
+       #+END_EXAMPLE
 
    Works as expected:
 
-   #+BEGIN_EXAMPLE
-   #!/bin/ruby
-   # Precede each line in the text from standard in (or file) with the
-   # current line number.
-   # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
+       #+BEGIN_EXAMPLE
+       #!/bin/ruby
+       # Precede each line in the text from standard in (or file) with the
+       # current line number.
+       # See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
 
-   while s = gets
-     puts "#{$<.file.lineno}: #{s}"
-   end
-   #+END_EXAMPLE
+       while s = gets
+         puts "#{$<.file.lineno}: #{s}"
+       end
+       #+END_EXAMPLE
 
 ** Noweb
 
    If you /name/ a block, you can /include/ that block *inside* another
    block... as text, using [[info:org#noweb][:noweb]].  Consider this org-mode file:
 
-   #+BEGIN_EXAMPLE
-   Print the last field of each line.
+       Print the last field of each line.
 
-   #+NAME: the-script
-   #+BEGIN_SRC ruby
-     puts $F.last
-   #+END_SRC
+       #+NAME: the-script
+       #+BEGIN_SRC ruby
+         puts $F.last
+       #+END_SRC
 
-   #+BEGIN_SRC sh :noweb yes :tangle last-col.sh
-     ruby -ane '<<the-script>>'
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC sh :noweb yes :tangle last-col.sh
+         ruby -ane '<<the-script>>'
+       #+END_SRC
 
    Creates [[file:last-col.sh][last-col.sh]] that contains:
 
-   #+BEGIN_EXAMPLE
-   ruby -ane 'puts $F.last'
-   #+END_EXAMPLE
+       #+BEGIN_EXAMPLE
+       ruby -ane 'puts $F.last'
+       #+END_EXAMPLE
 
 ** Usefulness?
 
@@ -839,33 +791,33 @@ I sometimes can get one of those features. I would love better ones.
 
    Modern languages often don't have such limitations.
 
-** TODO Noweb Considerations
+** Noweb Considerations
 
    What about multi-line blocks?
 
-   #+NAME: prime
-   #+BEGIN_SRC ruby
-     require "prime"
-     Prime.prime?(ARG[0])
-   #+END_SRC
+       #+NAME: prime
+       #+BEGIN_SRC ruby
+         require "prime"
+         Prime.prime?(ARG[0])
+       #+END_SRC
 
-   #+BEGIN_SRC ruby :noweb yes :tangle primes.sh
-     cat $* | xargs ruby -ne '<<prime>>'
-   #+END_SRC
+       #+BEGIN_SRC ruby :noweb yes :tangle primes.sh
+         cat $* | xargs ruby -ne '<<prime>>'
+       #+END_SRC
 
    Treats the /preceding text/ like /initial comment characters/:
 
-   #+BEGIN_SRC sh
-     cat $* | xargs ruby -ne 'require "prime"
-     cat $* | xargs ruby -ne 'Prime.prime?(ARG[0])'
-   #+END_SRC
+       #+BEGIN_EXAMPLE
+         cat $* | xargs ruby -ne 'require "prime"
+         cat $* | xargs ruby -ne 'Prime.prime?(ARG[0])'
+       #+END_EXAMPLE
 
    This recent change requires [[http://ss64.com/bash/syntax-here.html][here docs]] or single quotes:
 
-   #+BEGIN_SRC sh :noweb yes :tangle primes2.sh
-     cat $* | xargs ruby -ne '
-     <<prime>>'
-   #+END_SRC
+       #+BEGIN_SRC sh :noweb yes :tangle primes2.sh
+         cat $* | xargs ruby -ne '
+         <<prime>>'
+       #+END_SRC
 
 * Variables
 
@@ -875,14 +827,12 @@ I sometimes can get one of those features. I would love better ones.
 
    Build this block and execute it with ~C-c C-c~:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC python :var interest=13
-     return 313 * (interest / 100.0)
-   #+END_SRC
+       #+BEGIN_SRC python :var interest=13
+         return 313 * (interest / 100.0)
+       #+END_SRC
 
-   #+RESULTS:
-   : 40.69
-   #+END_EXAMPLE
+       #+RESULTS:
+       : 40.69
 
    Pythonic precision for the win.
 
@@ -890,43 +840,38 @@ I sometimes can get one of those features. I would love better ones.
 
    Specify multiple values all over the place:
 
-   #+BEGIN_EXAMPLE
-   #+HEADER: :var a=42 d=56 :var f=23
-   #+HEADERS: :var b=79 e=79
-   #+BEGIN_SRC ruby :var c=3 g=2
-     [ a, b, c, d, e, f, g ]
-   #+END_SRC
+       #+HEADER: :var a=42 d=56 :var f=23
+       #+HEADERS: :var b=79 e=79
+       #+BEGIN_SRC ruby :var c=3 g=2
+         [ a, b, c, d, e, f, g ]
+       #+END_SRC
 
-   #+RESULTS:
-   | 42 | 79 | 3 | 56 | 79 | 23 | 2 |
-   #+END_EXAMPLE
+       #+RESULTS:
+       | 42 | 79 | 3 | 56 | 79 | 23 | 2 |
 
-   But how useful is this?
+   How useful is this?
+
+   Allows you to verify a /block of code/ with values that are not
+   tangled.
 
 ** Block-to-Block Value Passing
 
    First, name your block:
-   #+BEGIN_EXAMPLE
-   #+NAME: twelve-primes
-   #+BEGIN_SRC ruby
-     require 'prime'
-     Prime.first 12
-   #+END_SRC
 
-   #+RESULTS: twelve-primes
-   | 2 | 3 | 5 | 7 | 11 | 13 | 17 | 19 | 23 | 29 | 31 | 37 |
-   #+END_EXAMPLE
+       #+NAME: twelve-primes
+       #+BEGIN_SRC ruby
+         require 'prime'
+         Prime.first 12
+       #+END_SRC
+
+       #+RESULTS: twelve-primes
+       | 2 | 3 | 5 | 7 | 11 | 13 | 17 | 19 | 23 | 29 | 31 | 37 |
 
    Pass them into another code block as an /array/ variable:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC python :var primes=twelve-primes
-     return primes[-1]
-   #+END_SRC
-
-   #+RESULTS:
-   : 37
-   #+END_EXAMPLE
+       #+BEGIN_SRC python :var primes=twelve-primes
+         return primes[-1]
+       #+END_SRC
 
    First time Ruby and Python has worked together.
 
@@ -934,76 +879,59 @@ I sometimes can get one of those features. I would love better ones.
 
    Need to create a table of numbers to use in following sections:
 
-   #+BEGIN_EXAMPLE
    #+NAME: cool-numbers
-   #+BEGIN_SRC emacs-lisp
-     (mapcar (lambda (i)
-               (list i          (random 10)
-                     (expt i 2) (random 100)
-                     (expt i 3) (random 1000)))
-             (number-sequence 1 10))
-   #+END_SRC
-
-   #+RESULTS: cool-numbers
-   |  1 | 1 |   1 | 14 |    1 |  74 |
-   |  2 | 7 |   4 | 25 |    8 | 823 |
-   |  3 | 2 |   9 | 68 |   27 | 402 |
-   |  4 | 4 |  16 | 17 |   64 | 229 |
-   |  5 | 6 |  25 |  4 |  125 | 208 |
-   |  6 | 7 |  36 | 67 |  216 | 203 |
-   |  7 | 0 |  49 | 96 |  343 | 445 |
-   |  8 | 0 |  64 | 58 |  512 | 908 |
-   |  9 | 2 |  81 | 15 |  729 | 465 |
-   | 10 | 0 | 100 | 61 | 1000 | 798 |
-   #+END_EXAMPLE
+  #+BEGIN_SRC emacs-lisp
+    (mapcar (lambda (i)
+              (list i          (random 10)
+                    (expt i 2) (random 100)
+                    (expt i 3) (random 1000)))
+            (number-sequence 1 10))
+  #+END_SRC
 
    While you can make a table of number any way you wish (in whatever
    language tickles your fancy). Here's a Pythonista version:
-   #+BEGIN_SRC python
-     import random
-     return [[i,      random.randint(1, 10),
-              i ** 2, random.randint(1, 100),
-              i ** 3, random.randint(1, 1000)] for i in range(1, 10)]
-   #+END_SRC
+       #+BEGIN_SRC python
+         import random
+         return [[i,      random.randint(1, 10),
+                  i ** 2, random.randint(1, 100),
+                  i ** 3, random.randint(1, 1000)] for i in range(1, 10)]
+       #+END_SRC
 
    One for the Rubyists:
-   #+BEGIN_SRC ruby
-     (1..10).collect do |i|
-       [ i, rand(10), i ** 2, rand(100), i ** 3, rand(1000) ]
-     end
+       #+BEGIN_SRC ruby
+         (1..10).collect do |i|
+           [ i, rand(10), i ** 2, rand(100), i ** 3, rand(1000) ]
+         end
+       #+END_SRC
+
+   JavaScript anyone?
+
+   #+BEGIN_SRC js
+     var __ = require('lodash');
+     __.map(__.range(1, 10),
+            function(i) {
+                return [i,              __.random(1, 10),
+                        Math.pow(i, 2), __.random(1, 100),
+                        Math.pow(i, 3), __.random(1, 1000) ]
+            });
    #+END_SRC
 
    And a token gesture for the Clojurians:
-   #+BEGIN_SRC clojure
-     (map #(list    %      (rand-int 10)
-                 (* % %)   (rand-int 100)
-                 (* % % %) (rand-int 1000))
-          (range 1 10))
-   #+END_SRC
+
+       #+BEGIN_SRC clojure
+         (map #(list    %      (rand-int 10)
+                     (* % %)   (rand-int 100)
+                     (* % % %) (rand-int 1000))
+              (range 1 10))
+       #+END_SRC
 
 ** List of Lists
 
    Grabbing our table gives our block an array of arrays:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC python :var nums=cool-numbers :results list
-     return [ cell + 1 for row in nums for cell in row ]
-   #+END_SRC
-
-   #+RESULTS:
-   - 2
-   - 4
-   - 2
-   - 23
-   - 2
-   - 955
-   - 3
-   - 7
-   - 5
-   - 43
-   - 9
-   ...
-   #+END_EXAMPLE
+       #+BEGIN_SRC python :var nums=cool-numbers :results list
+         return [ cell + 1 for row in nums for cell in row ]
+       #+END_SRC
 
    Here it takes the two dimensional matrix, puts it into one long
    list, and adds one to every number.
@@ -1012,51 +940,27 @@ I sometimes can get one of those features. I would love better ones.
 
    We can get just a single row from a table:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC ruby :var fifth=cool-numbers[4]
-     fifth
-   #+END_SRC
-
-   #+RESULTS:
-   | 5 | 9 | 25 | 93 | 125 | 524 |
-   #+END_EXAMPLE
+       #+BEGIN_SRC ruby :var fifth=cool-numbers[4]
+         fifth
+       #+END_SRC
 
    We can also get just a single column:
 
-   #+BEGIN_EXAMPLE
-   #+NAME: cubes
-   #+BEGIN_SRC elisp :var cubes=cool-numbers[,4]
-     cubes
-   #+END_SRC
-
-   #+RESULTS: cubes
-   | 1 | 8 | 27 | 64 | 125 | 216 | 343 | 512 | 729 | 1000 |
-   #+END_EXAMPLE
+       #+NAME: cubes
+       #+BEGIN_SRC elisp :var cubes=cool-numbers[,4]
+         cubes
+       #+END_SRC
 
 ** Reprocessing
 
    The =cool-numbers= was used in the =cubes= block, and we can use that
    again:
 
-   #+BEGIN_EXAMPLE
-   #+NAME: roots_of_list
-   #+BEGIN_SRC python :var lst=cubes :results list
-     import math
-     return [ math.sqrt(n) for n in lst ]
-   #+END_SRC
-
-   #+RESULTS: roots_of_list
-   - 1.0
-   - 2.8284271247461903
-   - 5.196152422706632
-   - 8.0
-   - 11.180339887498949
-   - 14.696938456699069
-   - 18.520259177452136
-   - 22.627416997969522
-   - 27.0
-   - 31.622776601683793
-   #+END_EXAMPLE
+       #+NAME: roots_of_list
+       #+BEGIN_SRC python :var lst=cubes :results list
+         import math
+         return [ math.sqrt(n) for n in lst ]
+       #+END_SRC
 
 * Keeping your Blocks Clean
 
@@ -1077,12 +981,10 @@ I sometimes can get one of those features. I would love better ones.
 
    Put necessary but unsightly code in [[info:org#prologue][:prologue]] sections:
 
-   #+BEGIN_EXAMPLE
-   #+HEADER: :prologue "source openrc"
-   #+BEGIN_SRC sh
-     nova list
-   #+END_SRC
-   #+END_EXAMPLE
+       #+HEADER: :prologue "source openrc"
+       #+BEGIN_SRC sh
+         nova list
+       #+END_SRC
 
    Code in the =:prologue= will not be exported.
 
@@ -1092,11 +994,9 @@ I sometimes can get one of those features. I would love better ones.
    specify how something should be processed. You can use =:prologue=
    with two backslashes to pre-pend it (for shell calls anyway):
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC sh :prologue "~/.rvm/bin/rvm 1.9.3@msw exec \\"
-     gem list
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC sh :prologue "~/.rvm/bin/rvm 1.9.3@msw exec \\"
+         gem list
+       #+END_SRC
 
    *Note:* Execution of Ruby or Python code is based on the [[http://www.emacswiki.org/emacs/RvmEl][rvm]], or
    [[http://github.com/jorgenschaefer/pyvenv][pyvenv]] or [[https://github.com/jorgenschaefer/elpy/wiki][ELPY]].
@@ -1107,20 +1007,17 @@ I sometimes can get one of those features. I would love better ones.
    Remember our =roots_of_list= block we [[*Reprocessing][created above]]?
    It took a variable, =lst=.
 
-   #+BEGIN_EXAMPLE
-   #+CALL: roots_of_list( lst='(16 144 81 61) )
+       #+CALL: roots_of_list( lst='(16 144 81 61) )
 
-   #+Results:
-   | 4.0 | 12.0 | 9.0 | 7.810249675906654 |
-   #+END_EXAMPLE
+       #+Results:
+       | 4.0 | 12.0 | 9.0 | 7.810249675906654 |
 
    Do it again, but with our =cool-numbers= table:
-   #+BEGIN_EXAMPLE
-   #+CALL: roots_of_list( lst=cool-numbers[,2] )
 
-   #+RESULTS:
-   | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
-   #+END_EXAMPLE
+       #+CALL: roots_of_list( lst=cool-numbers[,2] )
+
+       #+RESULTS:
+       | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
 
    We can /push/ values into blocks or a block can /pull/ values.
 
@@ -1134,21 +1031,17 @@ I sometimes can get one of those features. I would love better ones.
    The =ls -l= prepends a =total= line, we create a /processor/ to return
    all lines except the first. Notice, my variable, =data=:
 
-   #+BEGIN_EXAMPLE
-   #+NAME: skip_first
-   #+BEGIN_SRC elisp :var data=""
-     (cdr data)
-   #+END_SRC
-   #+END_EXAMPLE
+       #+NAME: skip_first
+       #+BEGIN_SRC elisp :var data=""
+         (cdr data)
+       #+END_SRC
 
    The /results/ from the code block is assigned to =*this*= which I
    assign to the =data= variable:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC sh :post skip_first(data=*this*)
-     ls -l
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC sh :post skip_first(data=*this*)
+         ls -l
+       #+END_SRC
 
 ** Library of Babel
 
@@ -1175,42 +1068,40 @@ I sometimes can get one of those features. I would love better ones.
    When exported, only /results/ are shown (not the source).
 
    Also supports /calling/ blocks too:
-   #+BEGIN_EXAMPLE
-   call_roots_of_list( lst=cool-numbers[,2] )
-   | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
-   #+END_EXAMPLE
+
+       call_roots_of_list( lst=cool-numbers[,2] )
+       | 1.0 | 2.0 | 3.0 | 4.0 | 5.0 | 6.0 | 7.0 | 8.0 | 9.0 | 10.0 |
 
 * Specialized Languages
 ** Graphviz
 
    If you have [[http://www.graphviz.org/][Graphviz]] installed:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC dot :file graphics.png
-     digraph {
-       a -> b;
-       b -> c:
-       d -> a;
-     }
-   #+END_SRC
-   #+END_EXAMPLE
+       #+BEGIN_SRC dot :file graphics.png
+         digraph {
+           a -> b;
+           b -> c:
+           d -> a;
+         }
+       #+END_SRC
 
    [[file:graphics.png]]
+
+   *Note:* To /edit/ the code, the language is =graphviz-dot=
+         To /run/ the code, the language is =dot=
 
 ** PlantUML
 
    If you have [[http://plantuml.sourceforge.net/download.html][PlantUML]] installed:
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC plantuml :file sequence-diagram.png
-     @startuml sequence-diagram.png
+       #+BEGIN_SRC plantuml :file sequence-diagram.png
+         @startuml sequence-diagram.png
 
-       Alice -> Bob: synchronous call
-       Alice ->> Bob: asynchronous call
+           Alice -> Bob: synchronous call
+           Alice ->> Bob: asynchronous call
 
-     @enduml
-   #+END_SRC
-   #+END_EXAMPLE
+         @enduml
+       #+END_SRC
 
    [[file:sequence-diagram.png]]
 
@@ -1219,24 +1110,21 @@ I sometimes can get one of those features. I would love better ones.
    Access the [[info:calc#Top][Emacs Calculator]] as well.
    You may need to load it: ~M-x load-library~ and type: ~ob-calc~
 
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC calc :var a=2 b=9 c=64 x=5
-     ((a+b)^3 + sqrt(c)) / (2x+1)
-   #+END_SRC
+       #+BEGIN_SRC calc :var a=2 b=9 c=64 x=5
+         ((a+b)^3 + sqrt(c)) / (2x+1)
+       #+END_SRC
 
-   #+RESULTS:
-   : 121.727272727
-   #+END_EXAMPLE
+       #+RESULTS:
+       : 121.727272727
 
    Or simplify the formula:
-   #+BEGIN_EXAMPLE
-   #+BEGIN_SRC calc :var a=4 b=2
-     ((a+b)^3 + sqrt(c)) / (2x+1)
-   #+END_SRC
 
-   #+RESULTS:
-   : (sqrt(c) + 216) / (2 x + 1)
-   #+END_EXAMPLE
+       #+BEGIN_SRC calc :var a=4 b=2
+         ((a+b)^3 + sqrt(c)) / (2x+1)
+       #+END_SRC
+
+       #+RESULTS:
+       : (sqrt(c) + 216) / (2 x + 1)
 
 * Summary
 
@@ -1287,3 +1175,37 @@ I sometimes can get one of those features. I would love better ones.
        [ i, i*i, i**3, factorial(i), fibonacci(i) ]
      end
    #+END_SRC
+
+   Need to generate some diagrams, right?
+
+   #+BEGIN_SRC dot :file tangling.png :cmdline -Kdot -Tpng
+     digraph G {
+       bgcolor="transparent"
+       node [fontname="helvetica-bold" fontsize=24]
+
+       node [label="LP File"] B
+       node [label="Source Code"] S
+       node [label="Documentation"] D
+
+       B -> D
+       B -> S
+     }
+   #+END_SRC
+
+   #+BEGIN_SRC dot :file tangling-dark.png :cmdline -Kdot -Tpng
+     digraph G {
+       bgcolor="transparent"
+       node [style="filled" color="white" fontname="helvetica-bold" fontsize=24]
+       edge [color="white"]
+
+       node [label="LP File"] B
+       node [label="Source Code"] S
+       node [label="Documentation"] D
+
+       B -> D
+       B -> S
+     }
+   #+END_SRC
+
+   Note: To evaluate the diagram and render a picture, change the
+   =graphviz-dot= language to just =dot=
