@@ -727,7 +727,6 @@ I sometimes can get one of those features. I would love better ones.
    interpreter to use. Here is specify the [[info:org#shebang][:shebang]] parameter (either
    as a block header or a document property):
 
-       #+BEGIN_EXAMPLE
        Precede each line in the text from standard in (or file) with the
        current line number.
        See [[http://benoithamelin.tumblr.com/ruby1line][one liners]].
@@ -741,7 +740,6 @@ I sometimes can get one of those features. I would love better ones.
        #+PROPERTY: shebang #!/bin/ruby
        #+PROPERTY: tangle lineno
        #+PROPERTY: comments org
-       #+END_EXAMPLE
 
    Works as expected:
 
@@ -969,6 +967,36 @@ I sometimes can get one of those features. I would love better ones.
   A block of code also /communicates/ something
 
   Try to keep necessary code that doesn't help communicate out.
+
+** Cleaning Results
+
+   Clean the output from code block using [[info:org#post][:post]] parameter.
+   Yeah, this could have been part of the *Exports* section.
+
+   The =ls -l= prepends a =total= line, we create a /processor/ to return
+   all lines except the first. Notice, my variable, =data=:
+
+       #+NAME: skip_first
+       #+BEGIN_SRC elisp :var data=""
+         (cdr data)
+       #+END_SRC
+
+   The /results/ from the code block is assigned to =*this*= which I
+   assign to the =data= variable:
+
+       #+BEGIN_SRC sh :post skip_first(data=*this*)
+         ls -l
+       #+END_SRC
+
+       #+RESULTS:
+       | -rw-rw-r-- | 1 | howard | howard |   404 | Mar | 15 | 20:55 | agenda.org                         |
+       | -rw-rw-r-- | 1 | howard | howard |    14 | Feb | 23 | 10:03 | double-line2.sh                    |
+       | -rw-rw-r-- | 1 | howard | howard |    33 | Feb | 23 | 09:20 | double-line.sh                     |
+       | -rw-rw-r-- | 1 | howard | howard |    12 | Feb | 23 | 07:21 | double-space.rb                    |
+       | -rw-rw-r-- | 1 | howard | howard |  4893 | Mar | 15 | 21:50 | for-the-host.el                    |
+       | -rw-rw-r-- | 1 | howard | howard |  9611 | Mar |  3 | 20:04 | graphics.png                       |
+       | -rw-rw-r-- | 1 | howard | howard | 33810 | Mar | 16 | 06:56 | instructions.org                   |
+       ...
 
 ** Environment Setup
 
