@@ -1,0 +1,587 @@
+#+TITLE: "Introducing" Elisp Programming
+#+DATE: <2016-07-21 Thu>
+#+AUTHOR: William Clifford
+#+EMAIL: wobh@yahoo.com
+#+EMAIL: twitter: @wobher
+
+* About this talk 						      :about:
+
+- After the Elisp tutorial
+- Before your first serious Elisp project
+
+* Useful preliminaries						      :about:
+
+- Basic Lisp syntax
+  - s-expressions ("prefix notation")
+    - ~(+ 1 2)~
+  - cons cells ~cons~, ~car~, ~cdr~
+    - as trees ~(equal '(0 . (1 . 2)) (list (cons 0 (cons 1 2))))~
+    - as lists ~(equal (list 0 1 2) (cons 0 (cons 1 (cons 2 nil))))~
+- Elisp tutorial
+- Useful extensions of elisp in ~cl~ package
+  - widely required, probably loaded already
+  - implements a large subset of Common Lisp
+  - can refer to the Common Lisp Hyperspec
+
+* Plan								       :plan:
+
+- step-by-step write a client to a simple web API
+
+* Steps								       :plan:
+  
+1. Get documentation for target API
+2. Setup tests
+3. Make requests
+4. Parse responses
+5. Setup package
+
+* Part n of m							       :plan:
+
+- Unlikely to get through all these steps.
+
+* Get documentation for target API 				   :docs:api:
+
+- Data.gov
+
+- API: [[https://www.data.gov/developers/api]]
+  - base URL: http://catalog.data.gov/api/3/
+
+- API docs: http://docs.ckan.org/en/latest/
+  - Demo URL: http://demo.ckan.org/api/3/
+
+* "Test first" 							      :tests:
+
+- controversy!
+
+* "Test first" Thesis 						  :tdd:tests:
+
+- prioritizes fundamental questions
+- scientific
+- (other virtues)
+
+* "Test first" Antithesis 					  :tdd:tests:
+
+- +premature+ prenatal formalization
+  - expensive refactoring
+- proceedural
+- (other complaints)
+
+* "Test first" Synthesis 					  :tdd:tests:
+
+Three middle paths
+
+- "spike"
+  - exploratory implementation
+
+- informal testing with REPLs
+  - for elisp, use the *scratch* buffer
+    - =C-x C-e= :: evaluates expression, sends results to minibuffer
+    - =C-u C-x C-e= :: evaluates expression, sends results to current buffer
+
+- use a lightweight test framework to reduce formal requirements
+  - for elisp, use ERT
+
+* How lightweight? 						  :ert:tests:
+
+- lightish
+
+* Documentation 					     :docs:ert:tests:
+
+- [[info:ert]]
+  - ~M-x ert RET t RET~ :: runs all tests
+    - results in ~*ert*~ buffer
+
+#+BEGIN_SRC elisp
+  (require 'ert)
+
+  (ert-deftest data-gov-test-catalog ()
+    "Test getting catalog from data.gov"
+    (should (equal ""
+                   (data-gov-catalog))))
+#+END_SRC
+
+* Uh-oh 							  :ert:tests:
+
+- we should mock the API response
+  - how do we do that?
+  - how do we even make requests?
+
+* Making HTTP requests 						       :http:
+
+two choices:
+
+- use ~request~ package
+  - use this one
+
+- use ~url~ package
+  - don't use this one
+  - for reals, use ~request~
+
+* Why the ~url~ package? 					   :url:http:
+
+- Primitive
+- Difficult
+- We'll learn more
+
+* ~url~ documentation 					      :docs:url:http:
+
+- info:url
+  - parse urls into lisp data structures
+  - make HTTP requests
+
+* Parsing URLs 						      :uris:url:http:
+
+- info:url#URI%2520Parsing
+
+#+NAME: parsing+printing_urls
+#+BEGIN_SRC elisp
+  (url-generic-parse-url "http://demo.ckan.org/api/3/action/group_show?id=data-explorer")
+
+  [cl-struct-url "http" nil nil "demo.ckan.org" nil "/api/3/action/group_show?id=data-explorer" nil nil t nil t]
+
+  (url-recreate-url [cl-struct-url "http" nil nil "demo.ckan.org" nil "/api/3/action/group_show?id=data-explorer" nil nil t nil t])
+
+  "http://demo.ckan.org/api/3/action/group_show?id=data-explorer"
+#+END_SRC
+
+#+NAME: example testing urls
+#+BEGIN_SRC elisp
+  (require 'ert)
+  (require 'url)
+
+  (ert-deftest url-test-parse-print-urls ()
+    "Test parsing and printing of URLs."
+    (let ((subject "http://demo.ckan.org/api/3/action/group_show?id=data-explorer")
+          (results [cl-struct-url "http" nil nil "demo.ckan.org" nil "/api/3/action/group_show?id=data-explorer" nil nil t nil t]))
+      (should (equal results
+                     (url-generic-parse-url subject)))
+      (should (equal subject
+                     (url-recreate-url results)))))
+#+END_SRC
+
+* URL structures					      :uris:url:http:
+- [[info:url#Parsed%20URIs]]
+
+#+NAME: parsed-uris
+#+BEGIN_SRC elisp
+  (ert-deftest url-test-parse-url-parts ()
+    "Test url slot reader functions."
+    (let ((subject (url-generic-parse-url
+                    "https://demo.ckan.org/api/3/action/group_show?id=data-explorer")))
+      (should (equal "https"
+                     (url-type subject)))
+      (should (equal nil
+                     (url-user subject)))
+      (should (equal nil
+                     (url-password subject)))
+      (should (equal 443
+                     (url-port subject)))
+      (should (equal "/api/3/action/group_show?id=data-explorer"
+                     (url-filename subject)))
+      (should (equal nil
+                     (url-target subject)))
+      (should (equal t
+                     (url-fullness subject)))))
+#+END_SRC
+
+* URL encoding 						      :uris:url:http:
+- [[info:url#URI%20Encoding]]
+
+#+NAME: encoding-uris
+#+BEGIN_SRC el
+  (ert-deftest url-test-encode-corrects-case ()
+    "url-encode-url should downcase case-indifferent parts of url."
+    (let ((subject "HTTP://DEMO.CKAN.ORG/API/3/ACTION/GROUP_SHOW?ID=DATA-EXPLORER"))
+      (should (equal "http://demo.ckan.org/API/3/ACTION/GROUP_SHOW?ID=DATA-EXPLORER"
+                     (url-encode-url subject)))))
+
+  (ert-deftest url-test-encode-hexifies ()
+    "url-encode-url should hexify were necessary."
+    (let ((subject "http://www.example.com/foo?bar baz"))
+      (should (equal "http://www.example.com/foo?bar%20baz")
+              (url-encode-url subject))))
+
+  (ert-deftest url-test-hexify-string ()
+    "url-hexify-string should hexify string"
+    (let ((subject "foo?bar baz")
+          (results "foo%3Fbar%20baz"))
+      (should (equal results (url-hexify-string subject)))))
+
+  (ert-deftest url-test-unhex-string ()
+    "url-unhex-string should unhex string"
+    (let ((subject "foo%3Fbar%20baz")
+          (results "foo?bar baz"))
+      (should (equal results (url-unhex-string subject)))))
+#+END_SRC
+
+* Create URL with a simple ~make-url~ package 		      :uris:url:http:
+
+#+NAME: make-url
+#+BEGIN_SRC elisp
+  ;; TODO: use RFC 3986 templates
+
+  (defun make-url-domain (&rest names)
+    (mapconcat 'identity names "."))
+
+  (defun make-url-path (&rest names)
+    (mapconcat 'identity names "/"))
+
+  (defun make-url-query (&rest fields)
+    (mapconcat 'identity fields "&"))
+
+  (defun make-url-query-field (field-key field-val)
+    (format "%s=%s" field-key field-val))
+
+  (provide 'make-url)
+#+END_SRC
+
+* URL Queries 						      :uris:url:http:
+
+- ~url-filename~ includes the query part.
+  - makes composing queries irritating
+  - can we make an accessor for it?
+    - use ~setf~ macro to set the query portion of ~url-filename~
+
+* ~url-query~ usage example 				      :uris:url:http:
+
+#+NAME: url-query-example-usage
+#+BEGIN_SRC elisp
+  (defun wikipedia-api-url (pageid &optional lang)
+    (let ((url (url-generic-parse-url "")))
+      (setf (url-host url)     (make-url-domain (or lang "en")
+                                                "wikipedia"
+                                                "org")
+            (url-filename url) (make-url-path   "w"
+                                                "api.php")
+            (url-query url)    (make-url-query  "action=query"
+                                                "prop=extracts"
+                                                (make-url-query-field "pageids"
+                                                                      pageid)
+                                                "explaintext"
+                                                "format=json"))))
+#+END_SRC
+
+* ~url-query~ tests					      :uris:url:http:
+
+#+NAME: url-query-tests
+#+BEGIN_SRC elisp
+  (require 'ert)
+
+  (ert-deftest url-query-test ()
+    "Test of uri-query association"
+    (let ((subject (url-generic-parse-url
+                    "http://example.com/foo?bar=1&baz=2#qux")))
+      (should (equal "bar=1&baz=2"
+                     (url-query subject)))))
+
+  (ert-deftest set-url-query-test ()
+    (let ((subject (url-generic-parse-url
+                    "http://example.com/foo?bar=1&baz=2#qux")))
+      (setf (url-query subject) "baz=3&bar=5")
+      (should (equal "/foo?baz=3&bar=5"
+                     (url-filename subject)))))
+#+END_SRC
+
+* ~url-query~ accessor 					      :uris:url:http:
+
+#+NAME: url-query-accessor
+#+BEGIN_SRC elisp
+  (defun url-query (url)
+    "Extract query portion of URL."
+    (let ((url-fn (url-filename url)))
+      (substring url-fn
+                 (1+ (string-match "?" url-fn)))))
+
+  (defun set-url-query (url qry)
+    "Set query portion of URL."
+    (let ((url-fn (url-filename url)))
+      (setf (url-filename url)
+            (with-temp-buffer
+              (insert url-fn)
+              (goto-char (point-min))
+              (search-forward "?")
+              (delete-region (point) (point-max))
+              (insert qry)
+              (buffer-string)))))
+
+  (gv-define-simple-setter url-query set-url-query)
+#+END_SRC
+
+* How to make HTTP requests				       :req:url:http:
+
+- [[info:url#Retrieving%20URLS]]
+  - Function: ~url-retrieve~ url callback &optional cbargs silent
+  - Function: ~url-retrieve-synchronously~ url
+
+* What about ~url-queue-retrieve~? 			       :req:url:http:
+
+- forget it exists
+
+* ~url-http-options~ useless? 			       :options:req:url:http:
+
+- [[info:url#HTTP%20URL%20Options]]
+
+#+NAME: url-options
+#+BEGIN_SRC elisp
+  (url-http-options "https://api.bufferapp.com/")
+
+  nil
+
+  (url-http-options "https://en.wikipedia.org/w/api.php")
+
+  nil
+
+  (url-http-options "http://apache.org/dist/httpd")
+
+  nil
+#+END_SRC
+
+* wat 							       :req:url:http:
+
+- ~url-retrieve~'s callback can be called any number of times
+- always check and dispatch on call status in callback
+
+* Missing documentation 				  :docs:req:url:http:
+
+- [[info:url#Customization]]
+- [[info:url#Variable%20Index]]
+- https://www.emacswiki.org/emacs/UrlPackage
+- https://www.rosettacode.org/wiki/HTTP#Emacs_Lisp
+- http://emacs.stackexchange.com/questions/12464/go-to-body-after-url-retrieve-synchronously
+- https://frozenlock.org/tag/url-retrieve/
+  - https://frozenlock.org/2012/07/07/url-retrieve-and-json-api/#comment-175
+- http://nullprogram.com/blog/2014/05/27/
+- http://nullprogram.com/blog/2016/06/16/
+  - http://debbugs.gnu.org/cgi/bugreport.cgi?bug=20159
+- https://gist.github.com/arnested/3006911
+
+* The extra headers				       :headers:req:url:http:
+
+- ~url-request-method~
+- ~url-request-extra-headers~
+- ~url-request-data~
+
+* Requests: emacswiki examples POST 		       :example:req:url:http:
+
+#+NAME: emacswiki-url-post
+#+BEGIN_SRC elisp
+  (defun my-url-http-post (url args)
+
+    "Send ARGS to URL as a POST request."
+    (let ((url-request-method "POST")
+          (url-request-extra-headers
+           '(("Content-Type" . "application/x-www-form-urlencoded")))
+          (url-request-data
+           (mapconcat (lambda (arg)
+                        (concat (url-hexify-string (car arg))
+                                "="
+                                (url-hexify-string (cdr arg))))
+                      args
+                      "&")))
+      ;; if you want, replace `my-switch-to-url-buffer' with `my-kill-url-buffer'
+      (url-retrieve url 'my-switch-to-url-buffer)))
+
+  (defun my-kill-url-buffer (status)
+    "Kill the buffer returned by `url-retrieve'."
+    (kill-buffer (current-buffer)))
+
+  (defun my-switch-to-url-buffer (status)
+    "Switch to the buffer returned by `url-retreive'.
+  The buffer contains the raw HTTP response sent by the server."
+    (switch-to-buffer (current-buffer)))
+
+  ;; And then you can do the following:
+
+  ;; (my-url-http-post "http://localhost/test.cgi" '(("post" . "1") ("text" . "just a test")))
+#+END_SRC
+
+* Requests: emacswiki examples GET 		       :example:req:url:http:
+
+#+NAME: emacswiki-url-get
+#+BEGIN_SRC elisp
+  (defvar fb-url "https://www.googleapis.com/freebase/v1/search")
+
+  (defun fbquery (type str)
+    (let ((url-request-method "GET")
+          (arg-stuff (concat "?query=" (url-hexify-string str)
+		       "&filter=" (url-hexify-string type))))
+      (url-retrieve (concat fb-url arg-stuff)
+                    (lambda (status) (switch-to-buffer (current-buffer))))))
+#+END_SRC
+* Requests: emacswiki examples cookies 		       :example:req:url:http:
+
+#+NAME: emacswiki-url-cookies
+#+BEGIN_SRC elisp
+  ;; To reject all cookies (see also ‘url-privacy-level’):
+
+  (setq url-cookie-untrusted-urls '(".*"))
+
+  ;; Say you want to ignore all cookies except those set by the
+  ;; EmacsWiki site. Using ".*" for ‘url-cookie-untrusted-urls’ in this
+  ;; case will always result in the cookie being rejected, because it
+  ;; matches the whole string. Try the following regular expression
+  ;; instead:
+
+  (setq url-cookie-trusted-urls '("^http://\\(www\\.\\)?emacswiki\\.org/.*")
+        url-cookie-untrusted-urls '("^https?://"))
+
+  ;; Each cookie is a defstruct, and all cookies are stored in a list
+  ;; defined by ‘url-cookie-storage’ and persistently in the file
+  ;; ‘url-cookie-file’. Cookies are automatically saved to this file
+  ;; once every ‘url-cookie-save-interval’ seconds.
+#+END_SRC
+
+* Requests: rosettacode example 		       :example:req:url:http:
+#+NAME: rosettacode-emacslisp-url-get
+#+BEGIN_SRC elisp
+  (with-current-buffer
+      (url-retrieve-synchronously "http://www.rosettacode.org")
+    (goto-char (point-min))
+    (search-forward "\n\n" nil t)  ;; skip headers
+    (prin1 (buffer-substring (point) (point-max)))
+    (kill-buffer (current-buffer)))
+#+END_SRC
+
+* Requests: frozenlock example 			       :example:req:url:http:
+
+#+NAME: frozenlock-get-parse-json-leaky
+#+BEGIN_SRC elisp
+  ;; Original
+  ;; - https://frozenlock.org/tag/url-retrieve/
+
+  ;; Now as long as we remain in this let function, we can get the
+  ;; google buffer with the symbol buffer. Let’s skip some steps and go
+  ;; to the interesting part:
+
+  (defun get-json (url)
+    (let ((buffer (url-retrieve-synchronously url))
+          (json nil))
+      (save-excursion
+        (set-buffer buffer)
+        (goto-char (point-min))
+        (re-search-forward "^$" nil 'move)
+        (setq json (buffer-substring-no-properties (point) (point-max)))
+        (kill-buffer (current-buffer)))
+      json))
+
+  ;; This function will return any content from a given url.
+
+  ;; Ok, we have the JSON formatted data, what can we do with it? Of
+  ;; course, Emacs already has a JSON parser. Simply make sure you
+  ;; require ‘json before going any further.
+
+  (defun get-and-parse-json (url)
+    (let ((json-object-type 'plist))
+      (json-read-from-string 
+       (get-json url))))
+
+  ;; Here I’ve choosen to parse it as a PLIST, be it could as well be an
+  ;; ALIST, or even an hash-table!
+
+  ;; improved
+  ;;   - https://frozenlock.org/2012/07/07/url-retrieve-and-json-api/#comment-175
+
+  (defun get-and-parse-json (url)
+    (interactive)
+    (with-current-buffer (url-retrieve-synchronously url)
+      (goto-char (point-min))
+      (re-search-forward “^$”)
+      (json-read)))
+#+END_SRC
+
+* Uh-oh							       :req:url:http:
+
+*DANGER* all of the above examples may leak buffers, per
+http://nullprogram.com/blog/2014/05/27/
+
+#+NAME: nullprogram-leaky
+#+BEGIN_SRC elisp
+  ;; Ultimately this makes buffer objects poor return values. It’s an
+  ;; impedance mismatch. The caller has to be careful to free (“kill”)
+  ;; the buffer. It’s easy to miss if an error is signaled. For example,
+  ;; `url-retrieve' and `url-retrieve-synchronously' return a buffer
+  ;; with the response from a web server. It’s not uncommon for Elisp
+  ;; programs to leak these buffers during normal operation.
+
+  (with-current-buffer (url-retrieve-synchronously some-url)
+    (setf (point) url-http-end-of-headers)
+    (prog1 (json-read)
+      (kill-buffer)))
+
+  ;; If json-read fails, the buffer is leaked.
+#+END_SRC
+
+* Safer							       :req:url:http:
+
+#+NAME: nullprogram-buffer-passing
+#+HEADER: :var some-url=""
+#+BEGIN_SRC elisp 
+  (with-temp-buffer
+    (url-retrieve-synchronously some-url)
+    (setf (point) url-http-end-of-headers)
+    (json-read))
+#+END_SRC
+
+* Uh-oh							       :req:url:http:
+   :PROPERTIES:
+   :header-args: :results value raw
+   :END:
+
+#+CALL: nullprogram-buffer-passing("https://api.github.com/users/octocat/orgs")
+
+: executing Elisp code block (nullprogram-buffer-passing)...
+
+: (some-url (quote "https://api.github.com/users/octocat/orgs"))
+
+: Contacting host: api.github.com:443
+: setf: Symbol's value as variable is void: url-http-end-of-headers
+
+* WTF							       :req:url:http:
+
+- https://fossies.org/diffs/emacs/24.3_vs_24.4/lisp/url/url-http.el-diff.html
+
+* End of part n 						       :plan:
+
+Next time:
+
+- processing responses
+- mocking and stubbing
+- packaging
+
+* References 							      :about:
+
+** TDD
+
+- http://martinfowler.com/bliki/TestDrivenDevelopment.html
+- http://www.jamesshore.com/Agile-Book/test_driven_development.html
+- http://david.heinemeierhansson.com/2014/tdd-is-dead-long-live-testing.html
+
+** ERT
+
+- http://nullprogram.com/blog/2012/08/15/
+
+** Making HTTP requests with the ~url~ package
+
+- https://www.emacswiki.org/emacs/UrlPackage
+- https://www.rosettacode.org/wiki/HTTP#Emacs_Lisp
+- http://emacs.stackexchange.com/questions/12464/go-to-body-after-url-retrieve-synchronously
+- https://frozenlock.org/tag/url-retrieve/
+  - https://frozenlock.org/2012/07/07/url-retrieve-and-json-api/#comment-175
+- http://nullprogram.com/blog/2014/05/27/
+- http://nullprogram.com/blog/2016/06/16/
+  - http://debbugs.gnu.org/cgi/bugreport.cgi?bug=20159
+- https://gist.github.com/arnested/3006911
+
+** Getting the response body
+
+- http://emacs.stackexchange.com/questions/12464/go-to-body-after-url-retrieve-synchronously
+
+* COMMENT org settings
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 24.5.1 (Org mode 8.3.4)
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t
+#+OPTIONS: tags:t tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
