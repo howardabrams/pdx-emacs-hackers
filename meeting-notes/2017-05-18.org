@@ -1,0 +1,26 @@
+#+TITLE:  Notes from Hack Night
+#+AUTHOR: Howard Abrams
+#+EMAIL:  howard.abrams@gmail.com
+#+DATE:   2017 May 10
+#+TAGS:   emacs hacking
+
+* Welcome Hackers
+       *to the Mystical Order of Emacs*
+
+  - Introductions
+
+  - Meeting Announcements:
+    - Are [[http://calagator.org/events/1250471899][Calagator Announcements]] sufficient?
+    - Ideas for Improving our [[https://pdx-emacs.slack.com/][Slack Community]]?
+    - Ideas for Improving our Emacs Outreach
+         through our [[https://github.com/howardabrams/pdx-emacs-hackers][Github project]]?
+    - Location? Ideas to move back downtown?
+    - Virtual or streaming meetings a good idea?
+
+  - Lightning Talks: [[https://github.com/howardabrams/dot-files/blob/master/elisp/better-breadcrumbs.el][Breadcrumb Implementations]]
+
+  - Hack Night: Automatic purging of old tasks
+
+  - Office Hours: Siam Lotus
+
+* Notes
