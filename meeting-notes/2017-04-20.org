@@ -1,0 +1,392 @@
+* Agenda
+
+  - Introductions
+  - That [[https://pdx-emacs.slack.com/][Slack system]] still working out?
+  - Workday's Beaverton office is moving... up three floors. Since our
+    downtown location change has been put on hold, we will continue
+    to be meeting in Beaverton for a little while longer.
+  - Hacking on Emacs: Making Breadcrumbs
+  - Thai Food and drinks
+
+* Summary of our Hackers Night
+
+  Tonight's goal was to implement a rudimentary, breadcrumb
+  project. Following a trail of interesting parts of a large code
+  based using the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Looking-Up-Identifiers.html][standard Xref/Tags system]] always seems to lose my
+  trail after a little bit, and some of the breadcrumb projects I've
+  use didn't seem /intuitive/ enough.
+
+  Let's begin with some pre-learned basics:
+
+  - Data Structure? [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Rings.html][Rings]] vs. [[https://www.gnu.org/software/emacs/manual/html_node/elisp/List-Variables.html][push and pop]] onto a List
+  - Useful functions? See =point-marker= and =goto-char=
+  - Expansion ideas? Should you /advice/ often used functions?
+
+  What follows are Howard's notes, polished for public consumption.
+
+** First Attempt
+
+   First, we played around with the built-in Ring data structure that
+   much of Emacs uses. We created =crumbs=, a ring data structure
+   and the current index into it, =current-crumb=:
+
+   #+BEGIN_SRC elisp
+   (defvar crumbs (make-ring 10) "A ring of crumbs, e.g. positions in file buffers.")
+   (defvar current-crumb 0 "An index into our ring of breadcrumbs.")
+   #+END_SRC
+
+   To get a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Overview-of-Markers.html][marker]] (the point position in a file buffer and the name of
+   the buffer), we call the =point-marker= function, and insert it into
+   the data structure:
+
+   #+BEGIN_SRC elisp
+   (defun drop-a-crumb ()
+     (interactive)
+     (ring-insert crumbs (point-marker)))
+   #+END_SRC
+
+   (We originally called our ring variable, =ringy= and this function
+   =droppy=... hey, naming things is hard!)
+
+   To retrieve the mark from the ring structure at a particular point
+   is straight-forward:
+   #+BEGIN_SRC elisp
+   (ring-ref crumbs current-crumb)
+   #+END_SRC
+
+   But this expression returns a tuple of the buffer and the point
+   position, so to use this we need to set both values. Our initial
+   jump-backwards-to-a-previously-dropped-crumb function looked like:
+
+   #+BEGIN_SRC elisp
+   (defun back-a-crumb ()
+     (interactive)
+     (let ((mark (ring-ref crumbs current-crumb)))
+       (pop-to-buffer (marker-buffer mark))
+       (goto-char (marker-position mark))
+       (setf current-crumb (1- current-crumb))))
+   #+END_SRC
+
+   The last line changes the crumb position /backwards/ in our ring
+   structure. The =ring-ref= function can take any position, as negative
+   numbers or numbers larger than the contents simply loop back around.
+
+   Of course, this means we should have a /forward/ function:
+   #+BEGIN_SRC elisp
+   (defun forward-a-crumb ()
+     (interactive)
+     (let ((mark (ring-ref crumbs current-crumb)))
+       (pop-to-buffer (marker-buffer mark))
+       (goto-char (marker-position mark))
+       (setf current-crumb (1+ current-crumb))))
+   #+END_SRC
+
+   This worked reasonably well, but all the functional programmers in
+   the room, while deeply unhappy about all the /state/ (it is somewhat
+   inevitable in Emacs Lisp), at least wanted to /hide/ the =crumbs=, so we
+   added =lexical= scoping and a bit of re-factoring:
+
+   #+BEGIN_SRC elisp
+     (lexical-let ((crumbs (make-ring 10))
+                   (current-crumb 0))
+
+       (defun drop-a-crumb ()
+         (interactive)
+         ;; Reset the position to match the drop?
+         (setq current-crumb 0)
+         (ring-insert crumbs (point-marker)))
+
+       (defun follow-crumb (direction)
+         (let* ((mark (ring-ref crumbs current-crumb))
+                (buf  (marker-buffer mark))
+                (poit (marker-position mark)))
+           (pop-to-buffer buf)
+           (goto-char poit)
+           (setf current-crumb (funcall direction current-crumb))))
+
+       (defun back-a-crumb ()
+         (interactive)
+         (follow-crumb #'1-))
+
+       (defun forward-a-crumb ()
+         (interactive)
+         (follow-crumb #'1+)))
+   #+END_SRC
+
+** Inserting into the Trail
+
+   This works in the simplistic case, however it doesn't intuitively
+   match /our/ expectations. Time for the whiteboard ...
+
+   For instance, what if you had the following breadcrumb trail (let's
+   give them symbolic names for some positions in buffers):
+
+   #+BEGIN_SRC dot :file 2017-04-20-a.png :cmdline -Kdot -Tpng :exports results :results silent
+     digraph G {
+         rankdir=LR;
+         a -> b -> c -> d -> e
+     }
+     #+END_SRC
+
+   [[file:2017-04-20-a.png]]
+
+   Let's move into the middle of this breadcrumb trail
+   by pointing the /current/ variable:
+
+   #+BEGIN_SRC dot :file 2017-04-20-b.png :cmdline -Kdot -Tpng :exports results :results silent
+       digraph G {
+           rankdir=LR;
+           a -> b -> c -> d -> e
+           node [label="Current" shape=box] current
+           current -> c
+           {rank=same; current c}
+       }
+     #+END_SRC
+
+   [[file:2017-04-20-b.png]]
+
+   What should happen if we drop a new crumb (=f=)? With a ring, it
+   either appends or pre-pends it on this list (which, for a ring, is
+   essentially the same thing). If we didn't change our current
+   position, our structure looks like:
+
+   #+BEGIN_SRC dot :file 2017-04-20-c.png :cmdline -Kdot -Tpng :exports results :results silent
+       digraph G {
+           rankdir=LR;
+           a -> b -> c -> d -> e -> f
+           node [label="Current" shape=box] current
+           current -> c
+           {rank=same; current c}
+       }
+     #+END_SRC
+
+   [[file:2017-04-20-c.png]]
+
+   With this, if when we move back on the crumby trail, we end
+   at =b= (which probably has no relationship with =f)=. However, if we
+   update the current pointer when we append the new mark, our
+   structure looks like:
+
+   #+BEGIN_SRC dot :file 2017-04-20-d.png :cmdline -Kdot -Tpng :exports results :results silent
+       digraph G {
+           rankdir=LR;
+           a -> b -> c -> d -> e -> f
+           node [label="Current" shape=box] current
+           current -> f
+           {rank=same; current f}
+       }
+     #+END_SRC
+
+   [[file:2017-04-20-d.png]]
+
+   But now, going backwards goes to =e=, which again, probably has
+   nothing to do with the new mark, and is even further away from =c=
+   (where we came from to set this new mark). While it seems
+   counter-intuitive to program, perhaps when we drop a crumb, we also
+   increase the counter from where we last were (=c=):
+
+   #+BEGIN_SRC dot :file 2017-04-20-e.png :cmdline -Kdot -Tpng :exports results :results silent
+       digraph G {
+           rankdir=LR;
+           a -> b -> c -> d -> e -> f
+           node [label="Current" shape=box] current
+           current -> d
+           {rank=same; current d}
+       }
+     #+END_SRC
+
+   [[file:2017-04-20-e.png]]
+
+   Now we can go backward to =c=, but finding =f= would be difficult, as
+   it may not be anywhere near =c=.
+   What we would expect is a mark that is /inserted/:
+
+   #+BEGIN_SRC dot :file 2017-04-20-f.png :cmdline -Kdot -Tpng :exports results :results silent
+       digraph G {
+           rankdir=LR;
+           a -> b -> c -> f -> d -> e
+           node [label="Current" shape=box] current
+           current -> f
+           {rank=same; current f}
+       }
+     #+END_SRC
+
+   [[file:2017-04-20-f.png]]
+
+   Now, if we try to go backward along our breadcrumb trail, we would
+   go back to =c= (which is intuitive), and forward from =c= goes to =f=
+   (expected).  /Forward again/? This would go to =d=, and while this may
+   not be really associated with the new mark, it is at least close
+   enough in the mind of the breadcrumb dropper.
+
+   At least, this seemed more intuitive to us after a bit of whiteboarding.
+
+** Breadcrumb Relationship
+
+   [[https://twitter.com/wobher][William Clifford‏]] thought we should model (and store) the
+   /relationships/ of the "dropped marks".
+
+   #+BEGIN_SRC dot :file 2017-04-20-g.png :cmdline -Kdot -Tpng :exports results :results silent
+         digraph G {
+           rankdir=LR;
+               d1 [label="d"]
+               c1 [label="c"]
+               b1 [label="b"]
+               a1 [label="a"]
+           b1 -> c
+           c1 -> d
+           d1 -> e
+           a1 -> b
+         }
+     #+END_SRC
+
+   [[file:2017-04-20-g.png]]
+
+   At this point =e= doesn't /point/ to anything, so going /forward/ doesn't
+   make sense, but normally, jumping /forward/ means jumping to the /value/
+   associated with the current mark (on the left side in the diagram).
+
+   If the current position is =c=, when we move around and /drop/ a new
+   breadcrumb, we /insert/ the new mark, =f=, by:
+
+   - Replacing the value associated with =c= to the new mark, and
+   - Add the new mark that is associated with =c='s old value:
+
+   #+BEGIN_SRC dot :file 2017-04-20-h.png :cmdline -Kdot -Tpng :exports results :results silent
+     digraph G {
+       rankdir=LR;
+           d1 [label="d"]
+           f1 [label="f" color="green"]
+           c1 [label="c"]
+           f  [color="green"]
+           b1 [label="b"]
+           a1 [label="a"]
+       a1 -> b
+       b1 -> c
+       c1 -> f [color="green"]
+       f1 -> d [color="green"]
+       d1 -> e
+     }
+     #+END_SRC
+
+   [[file:2017-04-20-h.png]]
+
+   Yeah, I immediately started jumping to maps as well.  Let's
+   implement this structure with an [[info:elisp#Association%20Lists][Association List]] to store our
+   sequence of 5 /relationship/ marks:
+
+   #+BEGIN_SRC elisp
+    ( ( :a . :b )
+      ( :b . :c )
+      ( :c . :d )
+      ( :d . :e ) )
+   #+END_SRC
+
+   With this, jumping /forward/ means jumping to the =assoc= of the current
+   key point, and going /backward/ means jumping to the =rassoc= of the
+   current key. And to /drop/ a new breadcrumb, =:f=, we:
+
+   - =rassoc= the value of =:c= (that is, =:d=) to be the new value
+     destination of the new mark, e.g. =( :f . :d )=
+   - =assoc= the =:c= to the new current mark, e.g. =( :c . :f )=
+
+   Our end result would be:
+   #+BEGIN_SRC elisp
+    ( ( :a . :b )
+      ( :b . :c )
+      ( :c . :f )
+      ( :f . :d )
+      ( :d . :e ) )
+   #+END_SRC
+
+   I'll let the implementation of this be an exercise to the reader, as
+   I had another idea...
+
+** Inserting into a List
+
+   At this point, our hacking fun came to an end, and we left to have a
+   round at a local Thai place. Traveling home on train, I got to
+   trying the idea of /inserting/ into simple list...
+
+   Let's go back to our breadcrumb trail represented as a list of
+   symbols:
+   #+BEGIN_SRC elisp
+     (setq crumbs '(:a :b :c :d :e))
+   #+END_SRC
+
+   We represent the =current-crumb= as an index where =0= would be
+   pointing to the first location, =:a=, and if we had moved back to =:c=,
+   our =current-crumb= as =2=.
+
+   If we wanted to insert =:f=, we want a function with this behavior:
+
+   #+BEGIN_SRC elisp
+     (list-insert '(:a :b :c :d :e) 2 :f) ; => (:a :b :c :f :d :e)
+     (list-insert '(:a :b :c :d :e) 0 :f) ; => (:a :f :b :c :d :e)
+     (list-insert '(:a :b :c :d :e) 4 :f) ; => (:a :b :c :d :e :f)
+   #+END_SRC
+
+   Since the list will never be /that/ long, we could make a function
+   that creates a new list with an element inserted /after/ some point.
+
+   #+BEGIN_SRC elisp
+     (defun list-insert (lst index element)
+       "Insert ELEMENT into the list, LIST, at INDEX, where pos == 0 would be insert."
+       ;; The calculated position is based on the behavior of `last' and `last'
+       (let ((pos (1- (- (length lst) index))))
+
+         (append (butlast lst pos)   ; First section
+                 (list element)      ; Element as a list
+                 (last lst pos))))   ; Second section
+   #+END_SRC
+
+   What about the extreme case of starting out?
+   #+BEGIN_SRC elisp
+     (list-insert () 0 :a) ; => (:a)
+   #+END_SRC
+   Actually, with an empty list, the index really doesn't matter:
+   #+BEGIN_SRC elisp
+     (list-insert () -1 :a) ; => (:a)
+   #+END_SRC
+
+** Intuitive Breadcrumbs
+
+   Let's re-factor our original breadcrumbs to use our new =list-insert=
+   function:
+
+   #+BEGIN_SRC elisp
+     (lexical-let ((crumbs (list))
+                   (current-crumb 0))
+
+       (defun drop-a-crumb ()
+         (interactive)
+         (setq crumbs
+               (list-insert crumbs current-crumb (point-marker)))
+         (setq current-crumb (1+ current-crumb)))
+
+       (defun follow-crumb ()
+         (if crumbs
+             (let* ((mark (nth current-crumb crumbs))
+                    (buf  (marker-buffer mark))
+                    (poit (marker-position mark)))
+               (pop-to-buffer buf)
+               (goto-char poit))))
+
+       (defun back-a-crumb ()
+         (interactive)
+         (if (> current-crumb 0)
+             (setq current-crumb (1- current-crumb)))
+         (follow-crumb))
+
+       (defun forward-a-crumb ()
+         (interactive)
+         (if (< current-crumb (1- (length crumbs)))
+             (setq current-crumb (1+ current-crumb)))
+         (follow-crumb)))
+   #+END_SRC
+
+   This works really well, except for when you want to go forward to a
+   crumb, but the point is already there. Seems that it should honor
+   the wish and move forward one more time. But now that the hack night
+   is over, I [[https://github.com/howardabrams/dot-files/blob/master/elisp/better-breadcrumbs.el][tweaked this for my own shaved yak]] which I hope to
+   demonstrate next month.
